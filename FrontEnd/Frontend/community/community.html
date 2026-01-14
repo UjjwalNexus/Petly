@@ -1,0 +1,1327 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community | PetCare Connect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: rgba(34, 197, 94, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --text-white: rgba(255, 255, 255, 0.95);
+            --text-light: rgba(255, 255, 255, 0.7);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cherry Bomb One', cursive;
+            background: #000;
+            color: var(--text-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Video Background */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        /* Glass Overlay */
+        .glass-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            z-index: -1;
+        }
+
+        /* MAIN LAYOUT */
+        .app-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* LEFT SIDEBAR */
+        .sidebar-left {
+            position: sticky;
+            top: 20px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .sidebar-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 2px solid var(--glass-border);
+            padding: 25px;
+            height: 100%;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            color: var(--primary-green);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .logo .paw {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-light);
+            font-size: 18px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+            transform: translateX(5px);
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 20px;
+        }
+
+        .active-pet {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .pet-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            border: 3px solid var(--primary-green);
+            overflow: hidden;
+        }
+
+        .pet-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* MAIN CONTENT AREA */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* STORIES SECTION */
+        .stories-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 2px solid var(--glass-border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .stories-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stories-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px 5px;
+        }
+
+        .story-item {
+            flex: 0 0 auto;
+            text-align: center;
+            width: 80px;
+            cursor: pointer;
+        }
+
+        .story-ring {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(45deg, var(--primary-green), #8b5cf6);
+            margin-bottom: 8px;
+        }
+
+        .story-ring-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #000;
+        }
+
+        .story-ring-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-name {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* CREATE POST */
+        .create-post {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 2px solid var(--glass-border);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .post-input {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar-small {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-green);
+            overflow: hidden;
+        }
+
+        .user-avatar-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-text {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 20px;
+            padding: 15px 20px;
+            color: var(--text-white);
+            font-family: 'Cherry Bomb One', cursive;
+            font-size: 16px;
+            resize: none;
+            height: 50px;
+        }
+
+        .post-text::placeholder {
+            color: var(--text-light);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Cherry Bomb One', cursive;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text-white);
+            transform: translateY(-2px);
+        }
+
+        /* FEED */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* POST CARD */
+        .post-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 2px solid var(--glass-border);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .post-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .post-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-green);
+            overflow: hidden;
+        }
+
+        .post-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .post-time {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            padding: 0 20px 20px;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            max-height: 500px;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-caption {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .pet-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .pet-tag {
+            background: rgba(34, 197, 94, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .hashtag {
+            color: #60a5fa;
+            font-size: 14px;
+        }
+
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .post-actions-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 20px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 8px 15px;
+            border-radius: 10px;
+        }
+
+        .post-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-white);
+        }
+
+        .post-action.liked {
+            color: #f43f5e;
+        }
+
+        .treat-btn {
+            background: linear-gradient(45deg, #f59e0b, #fbbf24);
+            color: white !important;
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+
+        /* RIGHT SIDEBAR */
+        .sidebar-right {
+            position: sticky;
+            top: 20px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+
+        .right-widget {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 2px solid var(--glass-border);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .widget-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggested-pets {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .suggested-pet {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .suggested-pet:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .suggested-pet-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--primary-green);
+        }
+
+        .suggested-pet-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .follow-btn {
+            margin-left: auto;
+            padding: 5px 15px;
+            border-radius: 15px;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid var(--primary-green);
+            color: var(--text-white);
+            cursor: pointer;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .follow-btn:hover {
+            background: rgba(34, 197, 94, 0.4);
+        }
+
+        .trending-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .trending-tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .trending-tag:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .upcoming-event {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .upcoming-event:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .event-date {
+            text-align: center;
+            background: var(--primary-green);
+            padding: 10px;
+            border-radius: 10px;
+            min-width: 60px;
+        }
+
+        /* FLOATING CREATE BUTTON */
+        .floating-create {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-green), #22d3ee);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .floating-create:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 30px rgba(34, 197, 94, 0.6);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 220px 1fr;
+            }
+            .sidebar-right {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+            .sidebar-left {
+                display: none;
+            }
+            .stories-scroll {
+                padding: 10px 0;
+            }
+            .post-actions {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .action-btn {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+        }
+
+        /* SCROLLBAR STYLING */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-green);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(34, 197, 94, 1);
+        }
+
+        /* BACK BUTTON */
+        .back-to-home {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--glass-border);
+            color: var(--text-white);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Cherry Bomb One', cursive;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-bg">
+        <video autoplay muted loop playsinline>
+            <source src="../resourses/intro.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Glass Overlay -->
+    <div class="glass-overlay"></div>
+
+    <!-- Back Button -->
+    <div class="back-to-home">
+        <button class="back-btn" onclick="window.location.href='../index.html'">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+    </div>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar-left">
+            <div class="sidebar-content">
+                <div class="logo">
+                    <div class="paw">🐾</div>
+                    <h1>PetConnect</h1>
+                </div>
+
+                <nav class="nav-menu">
+                    <div class="nav-item active">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-compass"></i>
+                        <span>Explore</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-play-circle"></i>
+                        <span>PawTakes</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-users"></i>
+                        <span>Groups</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>Events</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Marketplace</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Saved</span>
+                    </div>
+                    <div class="nav-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </div>
+                </nav>
+
+                <div class="active-pet">
+                    <div class="pet-avatar">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Fluffy" alt="Pet Avatar">
+                    </div>
+                    <h3>Fluffy</h3>
+                    <p>Golden Retriever</p>
+                    <div style="font-size: 12px; color: var(--text-light); margin-top: 5px;">
+                        <i class="fas fa-star" style="color: gold;"></i> 245 Care Points
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stories Section -->
+            <section class="stories-container">
+                <div class="stories-header">
+                    <h2>Recent Stories</h2>
+                    <button class="action-btn">
+                        <i class="fas fa-plus"></i> Add Story
+                    </button>
+                </div>
+                <div class="stories-scroll">
+                    <!-- Story items will be populated by JavaScript -->
+                    <div class="story-item" onclick="viewStory('max')">
+                        <div class="story-ring">
+                            <div class="story-ring-inner">
+                                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Max" alt="Max">
+                            </div>
+                        </div>
+                        <div class="story-name">Max</div>
+                    </div>
+                    <div class="story-item" onclick="viewStory('luna')">
+                        <div class="story-ring">
+                            <div class="story-ring-inner">
+                                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Luna" alt="Luna">
+                            </div>
+                        </div>
+                        <div class="story-name">Luna</div>
+                    </div>
+                    <div class="story-item" onclick="viewStory('charlie')">
+                        <div class="story-ring">
+                            <div class="story-ring-inner">
+                                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Charlie" alt="Charlie">
+                            </div>
+                        </div>
+                        <div class="story-name">Charlie</div>
+                    </div>
+                    <div class="story-item" onclick="viewStory('bella')">
+                        <div class="story-ring">
+                            <div class="story-ring-inner">
+                                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Bella" alt="Bella">
+                            </div>
+                        </div>
+                        <div class="story-name">Bella</div>
+                    </div>
+                    <div class="story-item" onclick="viewStory('rocky')">
+                        <div class="story-ring">
+                            <div class="story-ring-inner">
+                                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Rocky" alt="Rocky">
+                            </div>
+                        </div>
+                        <div class="story-name">Rocky</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Create Post -->
+            <section class="create-post">
+                <div class="post-input">
+                    <div class="user-avatar-small">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=You" alt="You">
+                    </div>
+                    <textarea class="post-text" placeholder="What's your pet up to today? #PetLife"></textarea>
+                </div>
+                <div class="post-actions">
+                    <button class="action-btn" onclick="openMediaUpload()">
+                        <i class="fas fa-camera"></i> Photo/Video
+                    </button>
+                    <button class="action-btn" onclick="openReelCreator()">
+                        <i class="fas fa-video"></i> Create Reel
+                    </button>
+                    <button class="action-btn" onclick="tagPets()">
+                        <i class="fas fa-tag"></i> Tag Pets
+                    </button>
+                    <button class="action-btn" onclick="postContent()" style="background: var(--primary-green);">
+                        <i class="fas fa-paw"></i> Post
+                    </button>
+                </div>
+            </section>
+
+            <!-- Feed -->
+            <section class="feed" id="feedContainer">
+                <!-- Post cards will be populated by JavaScript -->
+                
+                <!-- Sample Post 1 -->
+                <article class="post-card">
+                    <div class="post-header">
+                        <div class="post-user">
+                            <div class="post-avatar">
+                                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Sarah" alt="Sarah">
+                            </div>
+                            <div class="user-info">
+                                <h3>Sarah & Cooper</h3>
+                                <p>Cooper the Labrador • 2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="post-time">
+                            <i class="fas fa-globe"></i> Public
+                        </div>
+                    </div>
+                    
+                    <div class="post-content">
+                        <div class="post-caption">
+                            Beach day with my best friend! Cooper absolutely loves the waves 🏖️🐕 #BeachDay #LabradorLife #HappyDog
+                        </div>
+                        
+                        <div class="pet-tags">
+                            <span class="pet-tag">
+                                <i class="fas fa-paw"></i> Cooper
+                            </span>
+                        </div>
+                        
+                        <div class="hashtags">
+                            <span class="hashtag">#DogLife</span>
+                            <span class="hashtag">#BeachFun</span>
+                            <span class="hashtag">#PetCommunity</span>
+                        </div>
+                        
+                        <div class="post-image">
+                            <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&auto=format&fit=crop" alt="Dog at beach">
+                        </div>
+                    </div>
+                    
+                    <div class="post-stats">
+                        <span><i class="fas fa-heart"></i> 245 likes</span>
+                        <span><i class="fas fa-comment"></i> 42 comments</span>
+                        <span><i class="fas fa-share"></i> 18 shares</span>
+                        <span><i class="fas fa-treat"></i> 15 treats</span>
+                    </div>
+                    
+                    <div class="post-actions-bar">
+                        <div class="post-action" onclick="likePost(this)">
+                            <i class="far fa-heart"></i> Like
+                        </div>
+                        <div class="post-action" onclick="focusComment()">
+                            <i class="far fa-comment"></i> Comment
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-share-square"></i> Share
+                        </div>
+                        <div class="post-action treat-btn" onclick="sendTreat(this)">
+                            <i class="fas fa-treat"></i> Give Treat
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Sample Post 2 -->
+                <article class="post-card">
+                    <div class="post-header">
+                        <div class="post-user">
+                            <div class="post-avatar">
+                                <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Mike" alt="Mike">
+                            </div>
+                            <div class="user-info">
+                                <h3>Mike & Whiskers</h3>
+                                <p>Whiskers the Cat • 5 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="post-time">
+                            <i class="fas fa-users"></i> Group
+                        </div>
+                    </div>
+                    
+                    <div class="post-content">
+                        <div class="post-caption">
+                            New toy alert! Whiskers is obsessed with this feather wand. Best $10 I've spent all week! 😺
+                            Any other cat parents have toy recommendations? #CatLife #CatToys #SiameseCat
+                        </div>
+                        
+                        <div class="pet-tags">
+                            <span class="pet-tag">
+                                <i class="fas fa-paw"></i> Whiskers
+                            </span>
+                        </div>
+                        
+                        <div class="hashtags">
+                            <span class="hashtag">#CatCommunity</span>
+                            <span class="hashtag">#PetTips</span>
+                            <span class="hashtag">#Siamese</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-stats">
+                        <span><i class="fas fa-heart"></i> 189 likes</span>
+                        <span><i class="fas fa-comment"></i> 67 comments</span>
+                        <span><i class="fas fa-share"></i> 12 shares</span>
+                        <span><i class="fas fa-treat"></i> 8 treats</span>
+                    </div>
+                    
+                    <div class="post-actions-bar">
+                        <div class="post-action liked">
+                            <i class="fas fa-heart"></i> Liked
+                        </div>
+                        <div class="post-action" onclick="focusComment()">
+                            <i class="far fa-comment"></i> Comment
+                        </div>
+                        <div class="post-action">
+                            <i class="far fa-share-square"></i> Share
+                        </div>
+                        <div class="post-action treat-btn" onclick="sendTreat(this)">
+                            <i class="fas fa-treat"></i> Give Treat
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="sidebar-right">
+            <!-- Suggested Pets to Follow -->
+            <div class="right-widget">
+                <h3 class="widget-title">
+                    <i class="fas fa-user-plus"></i> Suggested Pets
+                </h3>
+                <div class="suggested-pets">
+                    <div class="suggested-pet">
+                        <div class="suggested-pet-avatar">
+                            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Oscar" alt="Oscar">
+                        </div>
+                        <div>
+                            <div style="font-weight: bold;">Oscar</div>
+                            <div style="font-size: 12px; color: var(--text-light);">German Shepherd</div>
+                        </div>
+                        <button class="follow-btn">Follow</button>
+                    </div>
+                    <div class="suggested-pet">
+                        <div class="suggested-pet-avatar">
+                            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Milo" alt="Milo">
+                        </div>
+                        <div>
+                            <div style="font-weight: bold;">Milo</div>
+                            <div style="font-size: 12px; color: var(--text-light);">French Bulldog</div>
+                        </div>
+                        <button class="follow-btn">Follow</button>
+                    </div>
+                    <div class="suggested-pet">
+                        <div class="suggested-pet-avatar">
+                            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Zoe" alt="Zoe">
+                        </div>
+                        <div>
+                            <div style="font-weight: bold;">Zoe</div>
+                            <div style="font-size: 12px; color: var(--text-light);">Ragdoll Cat</div>
+                        </div>
+                        <button class="follow-btn">Follow</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trending Hashtags -->
+            <div class="right-widget">
+                <h3 class="widget-title">
+                    <i class="fas fa-fire"></i> Trending Now
+                </h3>
+                <div class="trending-tags">
+                    <span class="trending-tag">#PetCareTips</span>
+                    <span class="trending-tag">#AdoptDontShop</span>
+                    <span class="trending-tag">#DogTraining</span>
+                    <span class="trending-tag">#CatsofInstagram</span>
+                    <span class="trending-tag">#PetHealth</span>
+                    <span class="trending-tag">#PetPhotography</span>
+                </div>
+            </div>
+
+            <!-- Upcoming Events -->
+            <div class="right-widget">
+                <h3 class="widget-title">
+                    <i class="fas fa-calendar-alt"></i> Upcoming Events
+                </h3>
+                <div class="upcoming-event" onclick="viewEvent('dog_park')">
+                    <div class="event-date">
+                        <div style="font-size: 18px;">15</div>
+                        <div style="font-size: 12px;">MAR</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold;">Dog Park Meetup</div>
+                        <div style="font-size: 12px; color: var(--text-light);">Central Park • 10 AM</div>
+                    </div>
+                </div>
+                <div class="upcoming-event" onclick="viewEvent('vet_qa')">
+                    <div class="event-date">
+                        <div style="font-size: 18px;">18</div>
+                        <div style="font-size: 12px;">MAR</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold;">Live Vet Q&A</div>
+                        <div style="font-size: 12px; color: var(--text-light);">Online • 7 PM</div>
+                    </div>
+                </div>
+                <div class="upcoming-event" onclick="viewEvent('adoption_day')">
+                    <div class="event-date">
+                        <div style="font-size: 18px;">22</div>
+                        <div style="font-size: 12px;">MAR</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold;">Adoption Day</div>
+                        <div style="font-size: 12px; color: var(--text-light);">Shelter • 11 AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="right-widget">
+                <h3 class="widget-title">
+                    <i class="fas fa-chart-line"></i> Your Activity
+                </h3>
+                <div style="text-align: center; padding: 15px 0;">
+                    <div style="font-size: 36px; color: var(--primary-green);">156</div>
+                    <div style="color: var(--text-light);">Care Points</div>
+                    <div style="margin-top: 15px; font-size: 14px; color: var(--text-light);">
+                        <div>Posts: 24</div>
+                        <div>Comments: 89</div>
+                        <div>Treats Given: 42</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Floating Create Button -->
+    <button class="floating-create" onclick="openCreateMenu()">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <script>
+        // Community Page JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const token = localStorage.getItem('petcare_token');
+            const user = localStorage.getItem('petcare_user');
+            
+            if (!token || !user) {
+                // Redirect to login if not authenticated
+                setTimeout(() => {
+                    window.location.href = '../auth/sign_in.html';
+                }, 1000);
+                return;
+            }
+
+            // Load user data
+            const userData = JSON.parse(user);
+            updateUserInfo(userData);
+            
+            // Load initial posts
+            loadPosts();
+        });
+
+        function updateUserInfo(user) {
+            // Update avatar images
+            document.querySelectorAll('.user-avatar-small img').forEach(img => {
+                img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=7c3aed&color=fff&size=200`;
+            });
+            
+            // Update pet info if available
+            if (user.petName) {
+                const activePet = document.querySelector('.active-pet h3');
+                if (activePet) {
+                    activePet.textContent = user.petName;
+                }
+            }
+        }
+
+        function loadPosts() {
+            // In a real app, this would fetch from an API
+            console.log('Loading posts...');
+            
+            // Simulate loading more posts
+            setTimeout(() => {
+                // Add more posts dynamically
+            }, 1000);
+        }
+
+        function likePost(element) {
+            const heartIcon = element.querySelector('i');
+            const isLiked = element.classList.contains('liked');
+            
+            if (isLiked) {
+                element.classList.remove('liked');
+                heartIcon.className = 'far fa-heart';
+                element.innerHTML = '<i class="far fa-heart"></i> Like';
+            } else {
+                element.classList.add('liked');
+                heartIcon.className = 'fas fa-heart';
+                element.innerHTML = '<i class="fas fa-heart"></i> Liked';
+            }
+        }
+
+        function sendTreat(element) {
+            element.innerHTML = '<i class="fas fa-treat"></i> Treat Sent!';
+            element.style.background = 'linear-gradient(45deg, #10b981, #34d399)';
+            
+            setTimeout(() => {
+                element.innerHTML = '<i class="fas fa-treat"></i> Give Treat';
+                element.style.background = 'linear-gradient(45deg, #f59e0b, #fbbf24)';
+            }, 2000);
+            
+            // Show notification
+            showNotification('Treat sent! 🦴');
+        }
+
+        function focusComment() {
+            alert('Comment feature - Focus on comment input');
+            // In full implementation, this would focus on the comment input field
+        }
+
+        function viewStory(petName) {
+            showNotification(`Viewing ${petName}'s story...`);
+            // In full implementation, this would open a story viewer
+        }
+
+        function viewEvent(eventId) {
+            showNotification(`Viewing event details...`);
+            // In full implementation, this would open event details
+        }
+
+        function openMediaUpload() {
+            showNotification('Opening media upload...');
+            // In full implementation, this would open file picker
+        }
+
+        function openReelCreator() {
+            showNotification('Opening reel creator...');
+            // In full implementation, this would open video recorder
+        }
+
+        function tagPets() {
+            showNotification('Opening pet tagger...');
+            // In full implementation, this would open pet tagging interface
+        }
+
+        function postContent() {
+            const postText = document.querySelector('.post-text');
+            if (postText.value.trim()) {
+                showNotification('Post published! 🐾');
+                postText.value = '';
+                
+                // Add new post to feed
+                addNewPost();
+            } else {
+                alert('Please write something before posting!');
+            }
+        }
+
+        function addNewPost() {
+            // In a real app, this would send to API and refresh feed
+            alert('New post would be added here in full implementation!');
+        }
+
+        function openCreateMenu() {
+            // Create a modal for different content types
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                backdrop-filter: blur(10px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(25px); border-radius: 25px; padding: 30px; border: 2px solid rgba(255,255,255,0.3); width: 90%; max-width: 500px;">
+                    <h2 style="text-align: center; margin-bottom: 30px; color: white;">Create Content</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <button onclick="createPostType('post')" style="background: rgba(34,197,94,0.2); border: 2px solid rgba(34,197,94,0.4); color: white; padding: 20px; border-radius: 20px; cursor: pointer; font-family: inherit; font-size: 16px;">
+                            <i class="fas fa-edit" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                            Post
+                        </button>
+                        <button onclick="createPostType('story')" style="background: rgba(168,85,247,0.2); border: 2px solid rgba(168,85,247,0.4); color: white; padding: 20px; border-radius: 20px; cursor: pointer; font-family: inherit; font-size: 16px;">
+                            <i class="fas fa-circle" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                            Story
+                        </button>
+                        <button onclick="createPostType('reel')" style="background: rgba(59,130,246,0.2); border: 2px solid rgba(59,130,246,0.4); color: white; padding: 20px; border-radius: 20px; cursor: pointer; font-family: inherit; font-size: 16px;">
+                            <i class="fas fa-video" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                            Reel
+                        </button>
+                        <button onclick="createPostType('video')" style="background: rgba(239,68,68,0.2); border: 2px solid rgba(239,68,68,0.4); color: white; padding: 20px; border-radius: 20px; cursor: pointer; font-family: inherit; font-size: 16px;">
+                            <i class="fas fa-film" style="font-size: 24px; margin-bottom: 10px;"></i><br>
+                            Video
+                        </button>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: white; padding: 15px 30px; border-radius: 20px; cursor: pointer; margin-top: 30px; width: 100%; font-family: inherit; font-size: 16px;">
+                        Cancel
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function createPostType(type) {
+            const types = {
+                'post': 'Creating new post...',
+                'story': 'Creating story...',
+                'reel': 'Opening reel creator...',
+                'video': 'Opening video upload...'
+            };
+            
+            showNotification(types[type]);
+            
+            // Remove modal
+            document.querySelector('body > div:last-child')?.remove();
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(34,197,94,0.9);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 15px;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(255,255,255,0.2);
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-paw" style="margin-right: 10px;"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+            
+            // Add animation styles
+            if (!document.querySelector('#notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'notification-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            // Adjust layout for mobile
+            if (window.innerWidth <= 768) {
+                document.querySelector('.sidebar-left')?.style.setProperty('display', 'none');
+            }
+        });
+    </script>
+</body>
+</html>

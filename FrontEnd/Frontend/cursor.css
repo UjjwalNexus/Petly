@@ -1,0 +1,92 @@
+/* Custom Cursor System - Global Styles */
+
+/* Hide default cursor everywhere */
+html, body, * {
+    cursor: none !important;
+}
+
+/* Cursor container */
+.cursor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+/* Base cursor styles */
+.cursor-element {
+    position: absolute;
+    pointer-events: none;
+    transform-origin: center;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+    display: block;
+    visibility: visible !important;
+}
+
+/* Rat cursor */
+#cursor-rat {
+    width: 40px; /* Start with smaller size */
+    height: 40px;
+    background-image: url('resources/cursor_rat.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10001;
+    /* Fallback background in case GIF doesn't load */
+    background-color: transparent;
+    /* Debug border - remove once working */
+    border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+/* Cat cursor */
+#cursor-cat {
+    width: 60px; /* Start with smaller size */
+    height: 60px;
+    background-image: url('resources/cursor_cat.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10000;
+    /* Fallback background in case GIF doesn't load */
+    background-color: transparent;
+    /* Debug border - remove once working */
+    border: 1px solid rgba(0, 0, 255, 0.3);
+}
+
+/* Ensure GIFs are visible */
+#cursor-rat.loaded, #cursor-cat.loaded {
+    border: none; /* Remove debug border when loaded */
+}
+
+/* If GIFs fail to load, show fallback */
+#cursor-rat.load-error, #cursor-cat.load-error {
+    background-image: none !important;
+    background-color: #8B6935; /* Rat color */
+    border-radius: 50%;
+}
+
+#cursor-cat.load-error {
+    background-color: #C86645; /* Cat color */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cursor-element {
+        transform: scale(0.8);
+    }
+}
+
+/* Ensure cursor stays hidden if JavaScript fails */
+.no-js .cursor-container {
+    display: none;
+}
+
+/* Ensure existing interactions still work */
+a, button, input, textarea, select, [role="button"], [tabindex]:not([tabindex="-1"]) {
+    cursor: none !important;
+}

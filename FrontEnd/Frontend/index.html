@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="cursor.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Website</title>
+<link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Cherry Bomb One', cursive;
+}
+
+/* VIDEO BACKGROUND */
+#video-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+#video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ENTER BUTTON */
+#enterBtn {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    z-index: 9999; /* Fix layering */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.2s ease;
+    box-shadow: 
+        0 4px 0 rgba(0,0,0,0.3),
+        0 0 15px rgba(255,255,255,0.1) inset;
+}
+
+#enterBtn:hover {
+    background: linear-gradient(145deg, #333, #555);
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 
+        0 6px 0 #111,
+        0 0 20px rgba(255,255,255,0.3) inset;
+}
+
+#backBtn {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 40px;
+    font-family: 'Cherry Bomb One', cursive;
+    font-size: 18px;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.9);
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    cursor: pointer;
+    z-index: 5;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+        0 5px 0 rgba(0,0,0,0.4),
+        0 0 20px rgba(255,255,255,0.15) inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Hover effect for tactical/glossy feel */
+#backBtn:hover {
+    background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.2));
+    transform: translateX(-50%) translateY(-3px);
+    box-shadow: 
+        0 8px 0 rgba(0,0,0,0.5),
+        0 0 30px rgba(255,255,255,0.3) inset,
+        0 0 25px rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,1);
+    letter-spacing: 4px;
+}
+
+/* GLASS OVERLAY (HIDDEN INITIALLY) */
+#glass {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(25px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    z-index: 2;
+}
+
+/* MAIN MENU */
+#menu {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    z-index: 4;
+}
+
+/* GLASS TILES - ENHANCED WITH HOVER EFFECTS */
+.tile {
+    width: 280px;
+    height: 340px;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(18px);
+    border-radius: 25px;
+    color: white;
+    font-size: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        0 0 30px rgba(255,255,255,0.1) inset;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.tile:hover {
+    transform: scale(1.15) translateY(-10px);
+    background: rgba(255,255,255,0.35);
+    backdrop-filter: blur(25px);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(255,255,255,0.2) inset,
+        0 0 30px rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.6);
+    z-index: 5;
+}
+
+/* TAGLINE */
+#tagline {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 50px;
+    text-align: center;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    letter-spacing: 2px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- VIDEO -->
+<div id="video-bg">
+    <video autoplay muted loop playsinline preload="auto">
+        <source src="resourses/intro.mp4" type="video/mp4">
+    </video>
+</div>
+
+<!-- GLASS EFFECT -->
+<div id="glass"></div>
+
+<!-- ENTER BUTTON -->
+<div id="enterBtn">ENTER</div>
+
+<!-- BACK BUTTON -->
+<button id="backBtn" style="display:none;"><img src="backbutton.png" alt="Back" style="width: 100%; height: 100%; object-fit: contain; border-radius: 18px;"></button>
+
+<!-- TAGLINE -->
+<div id="tagline">WHERE CARE MEETS COMMUNITY</div>
+
+<!-- MENU -->
+<div id="menu">
+<div class="tile" data-target="auth/profile.html">Profile</div>
+<div class="tile" data-target="community.html">Community</div>
+<div class="tile" data-target="wellness.html">Wellness & Care</div>
+<div class="tile" data-target="mrbruno.html">Mr Bruno</div>
+<div class="tile" data-target="contact.html">Contact Vets</div>
+</div>
+
+<script>
+document.getElementById("enterBtn").onclick = function () {
+    document.getElementById("glass").style.opacity = "1";
+    document.getElementById("menu").style.opacity = "1";
+    document.getElementById("tagline").style.opacity = "1";
+    document.getElementById("backBtn").style.display = "flex";
+    this.style.display = "none";
+};
+
+document.getElementById("backBtn").onclick = function () {
+    document.getElementById("glass").style.opacity = "0";
+    document.getElementById("menu").style.opacity = "0";
+    document.getElementById("tagline").style.opacity = "0";
+    document.getElementById("enterBtn").style.display = "flex";
+    this.style.display = "none";
+};
+
+// In your existing JavaScript, update the tile click handler
+document.addEventListener('DOMContentLoaded', function() {
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach(tile => {
+        tile.addEventListener('click', function() {
+            const target = this.getAttribute('data-target') || '';
+            const tileText = this.textContent.trim();
+            
+            // Check if this is the Profile tile
+            if (tileText.includes('Profile') || target.includes('profile')) {
+                // Let the auth system handle it
+                return;
+            }
+            
+            // Handle other tiles normally (your existing code)
+            // ... your existing navigation code ...
+        });
+    });
+});
+</script>
+<script src="card-animation.js"></script>
+// Check if we should show login popup automatically
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we came from profile page wanting to login
+    if (localStorage.getItem('show_login_popup') === 'true') {
+        // Clear the flag
+        localStorage.removeItem('show_login_popup');
+        
+        // Show login popup after a short delay
+        setTimeout(() => {
+            if (typeof showAuthPopup === 'function') {
+                showAuthPopup('login');
+            }
+        }, 1000);
+    }
+});
+// Check if we should show login popup automatically
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we came from profile page wanting to login
+    if (localStorage.getItem('show_login_popup') === 'true') {
+        // Clear the flag
+        localStorage.removeItem('show_login_popup');
+        
+        // Show login popup after a short delay
+        setTimeout(() => {
+            if (typeof showAuthPopup === 'function') {
+                showAuthPopup('login');
+            }
+        }, 1000);
+    }
+});
+<script src="cursor.js"></script>
+</body>
+</html>
