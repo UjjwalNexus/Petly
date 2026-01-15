@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety First | PetPal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #ff8c42;
+            --accent-color: #6bbf59;
+            --safety-color: #ff6b6b;
+            --transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cherry Bomb One', cursive;
+        }
+        
+        body {
+            color: white;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Video Background */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        
+        /* Subtle overlay */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+            z-index: -1;
+        }
+        
+        /* Content wrapper */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Safety Navigation */
+        .safety-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 2rem 0;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .nav-btn {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: var(--safety-color);
+            transform: translateY(-3px);
+        }
+        
+        .nav-btn.active {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: var(--safety-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+        }
+        
+        /* Safety Content Sections */
+        .safety-content-section {
+            max-width: 1000px;
+            width: 100%;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        .safety-content-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Toxins & Poisons Section */
+        .toxins-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 2rem;
+        }
+        
+        .toxin-category {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 1.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            color: var(--safety-color);
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .toxin-list {
+            list-style: none;
+        }
+        
+        .toxin-list li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .toxin-list li::before {
+            content: '☠️';
+            position: absolute;
+            left: 0;
+        }
+        
+        /* First Aid Section */
+        .first-aid-steps {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .step {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: var(--safety-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.95);
+            display: inline-block;
+        }
+        
+        .step-content {
+            margin-top: 1rem;
+            padding-left: 55px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Travel Safety */
+        .travel-checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 2rem;
+        }
+        
+        .checklist-item {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .checklist-item i {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Seasonal Safety */
+        .seasonal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 2rem;
+        }
+        
+        .season-card {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 1.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .season-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.2rem;
+        }
+        
+        .season-icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        
+        /* Safety Certification */
+        .certification-section {
+            background: rgba(107, 191, 89, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(107, 191, 89, 0.3);
+            text-align: center;
+        }
+        
+        .cert-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        /* Home Icon */
+        .home-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+        
+        .home-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            opacity: 0;
+            animation: fadeIn 1s 1.5s ease forwards;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .home-link:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.1) rotate(360deg);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Back Button */
+        .back-icon {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 100;
+        }
+        
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            opacity: 0;
+            animation: fadeIn 1s 1.5s ease forwards;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.1) rotate(-360deg);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 1.5rem;
+            }
+            
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .page-subtitle {
+                font-size: 1rem;
+            }
+            
+            .safety-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .toxins-grid,
+            .travel-checklist,
+            .seasonal-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .home-link, .back-link {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .back-icon {
+                bottom: 100px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .content-wrapper {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .toxin-category,
+            .first-aid-steps,
+            .season-card {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline id="video-background">
+        <source src="Comv.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    
+    <!-- Subtle overlay -->
+    <div class="video-overlay"></div>
+    
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i> Safety First
+            </div>
+            <p class="page-subtitle">Comprehensive safety guidelines for responsible pet ownership. Always prioritize professional veterinary care.</p>
+        </header>
+
+        <!-- Safety Navigation -->
+        <div class="safety-nav">
+            <button class="nav-btn active" data-section="toxins">
+                <i class="fas fa-skull-crossbones"></i> Toxins & Poisons
+            </button>
+            <button class="nav-btn" data-section="firstaid">
+                <i class="fas fa-first-aid"></i> First Aid Guide
+            </button>
+            <button class="nav-btn" data-section="travel">
+                <i class="fas fa-car"></i> Travel Safety
+            </button>
+            <button class="nav-btn" data-section="seasonal">
+                <i class="fas fa-sun"></i> Seasonal Safety
+            </button>
+        </div>
+
+        <!-- Toxins & Poisons Section -->
+        <section class="safety-content-section active" id="toxins-section">
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.95); text-align: center;">Common Pet Toxins & Poisons</h2>
+            
+            <div class="toxins-grid">
+                <!-- Human Foods -->
+                <div class="toxin-category">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <h3 class="category-title">Human Foods</h3>
+                    </div>
+                    <ul class="toxin-list">
+                        <li><strong>Chocolate:</strong> Contains theobromine, toxic to dogs and cats</li>
+                        <li><strong>Grapes & Raisins:</strong> Can cause kidney failure in dogs</li>
+                        <li><strong>Onions & Garlic:</strong> Damages red blood cells</li>
+                        <li><strong>Xylitol:</strong> Artificial sweetener in gum, candy, baked goods</li>
+                        <li><strong>Alcohol:</strong> Highly toxic, even in small amounts</li>
+                        <li><strong>Caffeine:</strong> Coffee, tea, energy drinks</li>
+                        <li><strong>Macadamia Nuts:</strong> Toxic to dogs</li>
+                        <li><strong>Avocado:</strong> Persin toxin affects birds, rodents</li>
+                    </ul>
+                </div>
+                
+                <!-- Household Products -->
+                <div class="toxin-category">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-spray-can"></i>
+                        </div>
+                        <h3 class="category-title">Household Products</h3>
+                    </div>
+                    <ul class="toxin-list">
+                        <li><strong>Cleaning products:</strong> Bleach, disinfectants, detergents</li>
+                        <li><strong>Antifreeze:</strong> Ethylene glycol - sweet taste attracts pets</li>
+                        <li><strong>Rodenticides:</strong> Rat and mouse poisons</li>
+                        <li><strong>Insecticides:</strong> Bug sprays, ant baits, flea treatments</li>
+                        <li><strong>Medications:</strong> Human pain relievers, antidepressants</li>
+                        <li><strong>Essential oils:</strong> Tea tree, eucalyptus, pennyroyal</li>
+                        <li><strong>Fertilizers:</strong> Garden and lawn products</li>
+                        <li><strong>Batteries:</strong> Acid and heavy metal exposure</li>
+                    </ul>
+                </div>
+                
+                <!-- Plants -->
+                <div class="toxin-category">
+                    <div class="category-header">
+                        <div class="category-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h3 class="category-title">Toxic Plants</h3>
+                    </div>
+                    <ul class="toxin-list">
+                        <li><strong>Lilies:</strong> Extremely toxic to cats - all parts</li>
+                        <li><strong>Sago Palm:</strong> All parts, especially seeds</li>
+                        <li><strong>Azalea/Rhododendron:</strong> Grayanotoxin poisoning</li>
+                        <li><strong>Oleander:</strong> Cardiac glycosides affect heart</li>
+                        <li><strong>Castor Bean:</strong> Ricin toxin - extremely dangerous</li>
+                        <li><strong>Autumn Crocus:</strong> Colchicine causes organ damage</li>
+                        <li><strong>Dieffenbachia:</strong> Calcium oxalate crystals</li>
+                        <li><strong>Tulips & Hyacinths:</strong> Bulbs most toxic</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="certification-section">
+                <div class="cert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Emergency Response for Suspected Poisoning</h3>
+                <p style="margin: 1rem 0; color: rgba(255, 255, 255, 0.9);">
+                    1. <strong>Remove your pet</strong> from the source immediately<br>
+                    2. <strong>Do NOT induce vomiting</strong> unless instructed by a professional<br>
+                    3. <strong>Call your veterinarian</strong> or pet poison helpline immediately<br>
+                    4. <strong>Bring the container/plant</strong> with you to the vet<br>
+                    5. <strong>Note the time</strong> of exposure and amount ingested
+                </p>
+            </div>
+        </section>
+
+        <!-- First Aid Section -->
+        <section class="safety-content-section" id="firstaid-section">
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.95); text-align: center;">Pet First Aid Guide</h2>
+            
+            <div class="first-aid-steps">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <h3 class="step-title">Assess the Situation</h3>
+                    <div class="step-content">
+                        <p><strong>Check for danger</strong> to yourself and your pet first</p>
+                        <p><strong>Approach carefully</strong> - injured animals may bite</p>
+                        <p><strong>Check responsiveness</strong> - gently call name, touch</p>
+                        <p><strong>Look for obvious injuries</strong> - bleeding, limping</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <h3 class="step-title">Check Vital Signs</h3>
+                    <div class="step-content">
+                        <p><strong>Breathing:</strong> Normal rate (dogs: 10-30/min, cats: 20-30/min)</p>
+                        <p><strong>Heart rate:</strong> Place hand on chest behind left elbow</p>
+                        <p><strong>Gum color:</strong> Should be pink (not white, blue, or yellow)</p>
+                        <p><strong>Capillary refill:</strong> Press gum, color should return in 1-2 seconds</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <h3 class="step-title">Basic First Aid Procedures</h3>
+                    <div class="step-content">
+                        <p><strong>CPR for pets:</strong> Only if no heartbeat AND no breathing</p>
+                        <p><strong>Bleeding control:</strong> Apply direct pressure with clean cloth</p>
+                        <p><strong>Burns:</strong> Cool with running water, don't apply ice</p>
+                        <p><strong>Choking:</strong> Look in mouth, perform Heimlich if trained</p>
+                        <p><strong>Heatstroke:</strong> Move to cool area, wet with cool water</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <h3 class="step-title">First Aid Kit Essentials</h3>
+                    <div class="step-content">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 1rem;">
+                            <div><i class="fas fa-bandage"></i> Gauze pads & bandages</div>
+                            <div><i class="fas fa-tape"></i> Adhesive tape</div>
+                            <div><i class="fas fa-scissors"></i> Blunt-end scissors</div>
+                            <div><i class="fas fa-thermometer"></i> Digital thermometer</div>
+                            <div><i class="fas fa-syringe"></i> Syringe (no needle)</div>
+                            <div><i class="fas fa-hand-sparkles"></i> Antiseptic wipes</div>
+                            <div><i class="fas fa-pills"></i> Hydrogen peroxide (3%)</div>
+                            <div><i class="fas fa-file-medical"></i> Emergency contact list</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Travel Safety Section -->
+        <section class="safety-content-section" id="travel-section">
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.95); text-align: center;">Travel Safety Checklist</h2>
+            
+            <div class="travel-checklist">
+                <div class="checklist-item">
+                    <i class="fas fa-car-side"></i>
+                    <h3>Car Travel</h3>
+                    <p>• Use pet seatbelt or carrier<br>• Never leave pet in hot car<br>• Take breaks every 2-3 hours<br>• Bring water and travel bowl</p>
+                </div>
+                
+                <div class="checklist-item">
+                    <i class="fas fa-plane"></i>
+                    <h3>Air Travel</h3>
+                    <p>• Check airline policies in advance<br>• Get health certificate from vet<br>• Use airline-approved carrier<br>• Book direct flights when possible</p>
+                </div>
+                
+                <div class="checklist-item">
+                    <i class="fas fa-hotel"></i>
+                    <h3>Hotel Stays</h3>
+                    <p>• Confirm pet-friendly policies<br>• Bring familiar bedding<br>• Never leave pet unattended<br>• Clean up after your pet</p>
+                </div>
+                
+                <div class="checklist-item">
+                    <i class="fas fa-hiking"></i>
+                    <h3>Outdoor Adventures</h3>
+                    <p>• Keep on leash in new areas<br>• Check for ticks frequently<br>• Bring pet-safe insect repellent<br>• Watch for wildlife hazards</p>
+                </div>
+            </div>
+            
+            <div style="background: rgba(255, 255, 255, 0.07); border-radius: 20px; padding: 2rem; margin-top: 2rem; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h3 style="color: var(--accent-color); margin-bottom: 1rem;"><i class="fas fa-passport"></i> International Travel Requirements</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4 style="color: rgba(255, 255, 255, 0.9); margin-bottom: 0.5rem;">Documentation</h4>
+                        <p style="color: rgba(255, 255, 255, 0.8);">• Current rabies vaccination<br>• Health certificate (APHIS Form 7001)<br>• Import permits if required<br>• Microchip documentation</p>
+                    </div>
+                    <div>
+                        <h4 style="color: rgba(255, 255, 255, 0.9); margin-bottom: 0.5rem;">Quarantine</h4>
+                        <p style="color: rgba(255, 255, 255, 0.8);">• Research destination requirements<br>• Some countries require quarantine<br>• Plan well in advance<br>• Consider pet's stress levels</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seasonal Safety Section -->
+        <section class="safety-content-section" id="seasonal-section">
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.95); text-align: center;">Seasonal Safety Guide</h2>
+            
+            <div class="seasonal-grid">
+                <div class="season-card">
+                    <div class="season-header">
+                        <div class="season-icon">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <h3>Summer Safety</h3>
+                    </div>
+                    <ul class="toxin-list">
+                        <li><strong>Heatstroke prevention:</strong> Never leave in hot cars</li>
+                        <li><strong>Paw protection:</strong> Hot pavement can burn pads</li>
+                        <li><strong>Water safety:</strong> Not all dogs can swim naturally</li>
+                        <li><strong>Parasite control:</strong> Fleas, ticks, mosquitoes</li>
+                        <li><strong>Lawn chemicals:</strong> Wait before allowing access</li>
+                        <li><strong>BBQ hazards:</strong> Skewers, bones, corn cobs</li>
+                    </ul>
+                </div>
+                
+                <div class="season-card">
+                    <div class="season-header">
+                        <div class="season-icon">
+                            <i class="fas fa-snowflake"></i>
+                        </div>
+                        <h3>Winter Safety</h3>
+                    </div>
+                    <ul class="toxin-list">
+                        <li><strong>Antifreeze:</strong> Sweet taste attracts, highly toxic</li>
+                        <li><strong>Ice melt:</strong> Can irritate paws, toxic if ingested</li>
+                        <li><strong>Hypothermia:</strong> Limit outdoor time in extreme cold</li>
+                        <li><strong>Indoor heating:</strong> Space heater safety</li>
+                        <li><strong>Car engines:</strong> Cats seek warmth</li>
+                        <li><strong>Dry skin:</strong> Humidifier may help</li>
+                    </ul>
+                </div>
+                
+                <div class="season-card">
+                    <div class="season-header">
+                        <div class="season-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h3>Spring & Fall</h3>
+                    </div>
+                    <ul class="toxin-list">
+                        <li><strong>Allergies:</strong> Pollen, mold, seasonal</li>
+                        <li><strong>Mushrooms:</strong> Many wild varieties are toxic</li>
+                        <li><strong>Rodenticides:</strong> Increased use in cooler months</li>
+                        <li><strong>Holiday hazards:</strong> Halloween candy, decorations</li>
+                        <li><strong>Snakes:</strong> More active during mild weather</li>
+                        <li><strong>Seasonal plants:</strong> Bulbs, decorative plants</li>
+                    </ul>
+                </div>
+                
+                <div class="season-card">
+                    <div class="season-header">
+                        <div class="season-icon">
+                            <i class="fas fa-holly-berry"></i>
+                        </div>
+                        <h3>Holiday Safety</h3>
+                    </div>
+                    <ul class="toxin-list">
+                        <li><strong>Christmas:</strong> Tinsel, ornaments, lights</li>
+                        <li><strong>Thanksgiving:</strong> Turkey bones, rich foods</li>
+                        <li><strong>Easter:</strong> Chocolate, lilies, plastic grass</li>
+                        <li><strong>Fireworks:</strong> Noise phobia, escape risk</li>
+                        <li><strong>Candles:</strong> Open flame hazards</li>
+                        <li><strong>Guests:</strong> Food, medications, escape doors</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Back Button -->
+    <div class="back-icon">
+        <a href="javascript:history.back()" class="back-link" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
+    <!-- Home Icon -->
+    <div class="home-icon">
+        <a href="../index.html" class="home-link" title="Home">
+            <i class="fas fa-home"></i>
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('video-background');
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.safety-content-section');
+            
+            // Ensure video plays
+            if (video) {
+                video.play().catch(function(error) {
+                    console.log("Video autoplay failed:", error);
+                });
+            }
+            
+            // Navigation button functionality
+            navButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    
+                    // Update active button
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === `${sectionId}-section`) {
+                            setTimeout(() => {
+                                section.classList.add('active');
+                            }, 50);
+                        }
+                    });
+                });
+            });
+            
+            // Interactive toxin list
+            const toxinItems = document.querySelectorAll('.toxin-list li');
+            toxinItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const toxinText = this.textContent;
+                    const category = this.closest('.toxin-category').querySelector('.category-title').textContent;
+                    
+                    alert(`Toxin Alert!\n\nCategory: ${category}\n\n${toxinText}\n\n⚠️ If ingested, contact your veterinarian immediately!`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
