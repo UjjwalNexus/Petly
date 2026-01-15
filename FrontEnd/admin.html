@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petly - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary), #1a2530);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .admin-logo {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-logo i {
+            font-size: 28px;
+            color: var(--success);
+        }
+
+        .admin-logo h1 {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .admin-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border-left-color: var(--secondary);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: var(--success);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 15px 25px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon.users {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .stat-icon.active {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+
+        .stat-icon.new {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .stat-icon.dogs {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* User Management Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+        }
+
+        .btn-danger {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 2px solid #e9ecef;
+            user-select: none;
+        }
+
+        th.sortable {
+            cursor: pointer;
+        }
+
+        th.sortable:hover {
+            background: #f1f3f4;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .pet-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .pet-badge.dog { background: #e8f4fc; color: #3498db; }
+        .pet-badge.cat { background: #fef2e8; color: #e67e22; }
+        .pet-badge.bird { background: #f0f9eb; color: #2ecc71; }
+        .pet-badge.fish { background: #e8f4f8; color: #1abc9c; }
+        .pet-badge.rabbit { background: #f9ebf5; color: #9b59b6; }
+        .pet-badge.other { background: #f4f4f4; color: #7f8c8d; }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-icon.edit {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .btn-icon.edit:hover {
+            background: #c3e6cb;
+        }
+
+        .btn-icon.delete {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-icon.delete:hover {
+            background: #f5c6cb;
+        }
+
+        .btn-icon.view {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .btn-icon.view:hover {
+            background: #bee5eb;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 10px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .page-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .page-btn:hover:not(.active) {
+            background: #f8f9fa;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-dot.active {
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.inactive {
+            background: #95a5a6;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1001;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--accent); }
+        .toast.warning { background: var(--warning); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .server-status {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 20px;
+        }
+
+        .server-status.connected {
+            color: var(--success);
+        }
+
+        .server-status.disconnected {
+            color: var(--accent);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="admin-logo">
+                <i class="fas fa-shield-alt"></i>
+                <h1>Petly Admin</h1>
+            </div>
+            
+            <div class="admin-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-page="users">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-page="add-user">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add New User</span>
+                </a>
+                
+                <div class="nav-divider"></div>
+                
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Back to Site</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div>
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2>Admin Dashboard</h2>
+                    <div class="server-status" id="serverStatus">
+                        <i class="fas fa-circle"></i>
+                        <span>Connecting...</span>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <button class="btn btn-primary" onclick="refreshUsers()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div id="dashboardPage" class="page active">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-icon users">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon active">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="stat-value" id="activeUsers">0</div>
+                        <div class="stat-label">Active Today</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon new">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="stat-value" id="newUsers">0</div>
+                        <div class="stat-label">New This Week</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon dogs">
+                            <i class="fas fa-dog"></i>
+                        </div>
+                        <div class="stat-value" id="dogOwners">0</div>
+                        <div class="stat-label">Dog Owners</div>
+                    </div>
+                </div>
+
+                <!-- Recent Users Table -->
+                <div class="section-header">
+                    <h2>Recent Users</h2>
+                    <button class="btn btn-primary" onclick="showPage('users')">
+                        <i class="fas fa-list"></i> View All Users
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-header">
+                        <div>
+                            <h3>Recently Registered</h3>
+                            <p class="stat-label" style="margin-top: 5px;">Last 10 users</p>
+                        </div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="name">Name</th>
+                                <th class="sortable" data-sort="email">Email</th>
+                                <th>Password</th>
+                                <th class="sortable" data-sort="pet">Pet Type</th>
+                                <th class="sortable" data-sort="date">Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentUsersTable">
+                            <!-- Will be populated by JavaScript -->
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading users...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- User Management Page -->
+            <div id="usersPage" class="page" style="display: none;">
+                <div class="section-header">
+                    <h2>User Management</h2>
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn btn-success" onclick="showAddUserModal()">
+                            <i class="fas fa-user-plus"></i> Add User
+                        </button>
+                        <div class="export-buttons">
+                            <button class="btn btn-primary btn-sm" onclick="exportUsers('csv')">
+                                <i class="fas fa-file-csv"></i> CSV
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="exportUsers('json')">
+                                <i class="fas fa-file-code"></i> JSON
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="userSearch" placeholder="Search users by name or email..." 
+                                   onkeyup="searchUsers()">
+                        </div>
+                        <div>
+                            <select id="petFilter" class="form-control" style="width: 150px;" onchange="filterUsers()">
+                                <option value="">All Pets</option>
+                                <option value="dog">Dogs</option>
+                                <option value="cat">Cats</option>
+                                <option value="bird">Birds</option>
+                                <option value="fish">Fish</option>
+                                <option value="rabbit">Rabbits</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="id">ID</th>
+                                <th class="sortable" data-sort="name">Name</th>
+                                <th class="sortable" data-sort="email">Email</th>
+                                <th>Password</th>
+                                <th>Phone</th>
+                                <th class="sortable" data-sort="pet">Pet Type</th>
+                                <th class="sortable" data-sort="date">Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination will be added by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add User Page -->
+            <div id="addUserPage" class="page" style="display: none;">
+                <div class="section-header">
+                    <h2>Add New User</h2>
+                    <button class="btn btn-primary" onclick="showPage('users')">
+                        <i class="fas fa-arrow-left"></i> Back to Users
+                    </button>
+                </div>
+
+                <div class="table-container" style="padding: 30px;">
+                    <h3 style="margin-bottom: 25px; color: var(--primary);">Create New User Account</h3>
+                    
+                    <form id="addUserForm" onsubmit="event.preventDefault(); addNewUser();">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserName">Full Name *</label>
+                                <input type="text" id="newUserName" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newUserEmail">Email Address *</label>
+                                <input type="email" id="newUserEmail" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserPassword">Password *</label>
+                                <div class="password-field">
+                                    <input type="password" id="newUserPassword" class="form-control" required>
+                                    <button type="button" class="toggle-password" onclick="togglePassword('newUserPassword')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newUserPhone">Phone Number</label>
+                                <input type="tel" id="newUserPhone" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserPetType">Pet Type *</label>
+                                <select id="newUserPetType" class="form-control" required>
+                                    <option value="dog">Dog</option>
+                                    <option value="cat">Cat</option>
+                                    <option value="bird">Bird</option>
+                                    <option value="fish">Fish</option>
+                                    <option value="rabbit">Rabbit</option>
+                                    <option value="other" selected>Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newUserStatus">Account Status</label>
+                                <select id="newUserStatus" class="form-control">
+                                    <option value="active" selected>Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newUserNotes">Admin Notes (Optional)</label>
+                            <textarea id="newUserNotes" class="form-control" rows="3" 
+                                      placeholder="Add any notes about this user..."></textarea>
+                        </div>
+
+                        <div style="margin-top: 30px; display: flex; gap: 15px;">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Create User
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="generateRandomUser()">
+                                <i class="fas fa-random"></i> Generate Random User
+                            </button>
+                            <button type="reset" class="btn">
+                                <i class="fas fa-undo"></i> Reset Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settingsPage" class="page" style="display: none;">
+                <div class="section-header">
+                    <h2>Admin Settings</h2>
+                </div>
+
+                <div class="table-container" style="padding: 30px;">
+                    <h3 style="margin-bottom: 25px; color: var(--primary);">System Configuration</h3>
+                    
+                    <div class="form-group">
+                        <label>API Server URL</label>
+                        <input type="text" id="apiUrl" class="form-control" 
+                               value="http://localhost:5000/api" 
+                               onchange="updateApiUrl()">
+                        <small style="color: #7f8c8d; display: block; margin-top: 5px;">
+                            Change this if your backend is running on a different port or URL
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Items Per Page</label>
+                        <select id="itemsPerPage" class="form-control" onchange="updateItemsPerPage()">
+                            <option value="10">10 items</option>
+                            <option value="25" selected>25 items</option>
+                            <option value="50">50 items</option>
+                            <option value="100">100 items</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Auto-refresh Interval</label>
+                        <select id="refreshInterval" class="form-control" onchange="updateRefreshInterval()">
+                            <option value="0">Manual refresh only</option>
+                            <option value="30000">Every 30 seconds</option>
+                            <option value="60000" selected>Every minute</option>
+                            <option value="300000">Every 5 minutes</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <h4 style="margin-bottom: 20px;">Danger Zone</h4>
+                        <div style="background: #f8d7da; padding: 20px; border-radius: 8px;">
+                            <button class="btn btn-danger" onclick="deleteAllUsers()">
+                                <i class="fas fa-trash"></i> Delete All Users
+                            </button>
+                            <small style="color: #721c24; display: block; margin-top: 10px;">
+                                Warning: This will delete all user accounts. This action cannot be undone.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Edit User</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="editUserId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editUserName">Full Name *</label>
+                            <input type="text" id="editUserName" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editUserEmail">Email Address *</label>
+                            <input type="email" id="editUserEmail" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editUserPassword">Password *</label>
+                            <div class="password-field">
+                                <input type="password" id="editUserPassword" class="form-control" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('editUserPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editUserPhone">Phone Number</label>
+                            <input type="tel" id="editUserPhone" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editUserPetType">Pet Type *</label>
+                            <select id="editUserPetType" class="form-control" required>
+                                <option value="dog">Dog</option>
+                                <option value="cat">Cat</option>
+                                <option value="bird">Bird</option>
+                                <option value="fish">Fish</option>
+                                <option value="rabbit">Rabbit</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editUserStatus">Account Status</label>
+                            <select id="editUserStatus" class="form-control">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editUserNotes">Admin Notes</label>
+                        <textarea id="editUserNotes" class="form-control" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger" id="deleteBtn" onclick="deleteUser()">Delete</button>
+                <button class="btn btn-success" onclick="saveUser()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = localStorage.getItem('apiUrl') || 'http://localhost:5000/api';
+        let allUsers = [];
+        let currentPage = 1;
+        let itemsPerPage = parseInt(localStorage.getItem('itemsPerPage')) || 25;
+        let totalPages = 1;
+        let currentSort = { field: 'id', direction: 'asc' };
+        let refreshInterval = null;
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdmin();
+        });
+
+        function initializeAdmin() {
+            // Setup navigation
+            setupNavigation();
+            
+            // Check server connection
+            checkServerConnection();
+            
+            // Load users
+            loadUsers();
+            
+            // Setup auto-refresh
+            setupAutoRefresh();
+            
+            // Setup mobile menu
+            document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
+        }
+
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Show the corresponding page
+                    const page = this.getAttribute('data-page');
+                    showPage(page);
+                    
+                    // Close mobile menu if open
+                    document.getElementById('sidebar').classList.remove('active');
+                });
+            });
+        }
+
+        function showPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('active');
+            });
+            
+            // Show selected page
+            const pageElement = document.getElementById(page + 'Page');
+            if (pageElement) {
+                pageElement.style.display = 'block';
+                pageElement.classList.add('active');
+            }
+            
+            // Update URL hash
+            window.location.hash = page;
+            
+            // Load data if needed
+            if (page === 'users') {
+                loadUsers();
+            }
+        }
+
+        function checkServerConnection() {
+            const statusEl = document.getElementById('serverStatus');
+            
+            fetch(`${API_BASE_URL}/health`)
+                .then(response => response.json())
+                .then(data => {
+                    statusEl.innerHTML = `
+                        <i class="fas fa-circle" style="color: #2ecc71;"></i>
+                        <span>Connected to server</span>
+                    `;
+                    statusEl.className = 'server-status connected';
+                })
+                .catch(error => {
+                    statusEl.innerHTML = `
+                        <i class="fas fa-circle" style="color: #e74c3c;"></i>
+                        <span>Server not connected</span>
+                    `;
+                    statusEl.className = 'server-status disconnected';
+                    showToast('Cannot connect to server. Please start the backend.', 'error');
+                });
+        }
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/users`);
+                const data = await response.json();
+                
+                if (data.success && data.users) {
+                    allUsers = data.users.map(user => ({
+                        id: user.id || user._id,
+                        name: user.name,
+                        email: user.email,
+                        password: user.password || '********',
+                        phone: user.phone || 'Not provided',
+                        petType: user.petType || 'other',
+                        createdAt: user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Unknown',
+                        status: 'active',
+                        notes: ''
+                    }));
+                    
+                    updateDashboardStats();
+                    updateUsersTable();
+                    showToast(`Loaded ${allUsers.length} users`, 'success');
+                } else {
+                    showToast('Failed to load users', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showToast('Error connecting to server', 'error');
+            }
+        }
+
+        function updateDashboardStats() {
+            // Update stats cards
+            document.getElementById('totalUsers').textContent = allUsers.length;
+            
+            const today = new Date().toDateString();
+            const activeToday = allUsers.filter(user => {
+                const userDate = new Date(user.createdAt).toDateString();
+                return userDate === today;
+            }).length;
+            document.getElementById('activeUsers').textContent = activeToday;
+            
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const newThisWeek = allUsers.filter(user => new Date(user.createdAt) > weekAgo).length;
+            document.getElementById('newUsers').textContent = newThisWeek;
+            
+            const dogOwners = allUsers.filter(user => user.petType === 'dog').length;
+            document.getElementById('dogOwners').textContent = dogOwners;
+            
+            // Update recent users table
+            updateRecentUsersTable();
+        }
+
+        function updateRecentUsersTable() {
+            const tableBody = document.getElementById('recentUsersTable');
+            const recentUsers = [...allUsers]
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 10);
+            
+            if (recentUsers.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px;">
+                            No users found. Add some users to get started.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = recentUsers.map(user => `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>
+                            ${user.name}
+                        </div>
+                    </td>
+                    <td>${user.email}</td>
+                    <td>
+                        <div style="font-family: monospace; background: #f8f9fa; padding: 4px 8px; border-radius: 4px;">
+                            ${user.password}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="pet-badge ${user.petType}">
+                            ${user.petType.charAt(0).toUpperCase() + user.petType.slice(1)}
+                        </span>
+                    </td>
+                    <td>${user.createdAt}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon edit" onclick="editUser('${user.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon delete" onclick="deleteUserPrompt('${user.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateUsersTable(filteredUsers = allUsers) {
+            const tableBody = document.getElementById('usersTable');
+            
+            // Sort users
+            filteredUsers.sort((a, b) => {
+                let aVal = a[currentSort.field];
+                let bVal = b[currentSort.field];
+                
+                if (currentSort.field === 'date') {
+                    aVal = new Date(a.createdAt);
+                    bVal = new Date(b.createdAt);
+                }
+                
+                if (currentSort.direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+            
+            // Paginate
+            totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+            
+            if (paginatedUsers.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            No users found. Try adjusting your search or add some users.
+                        </td>
+                    </tr>
+                `;
+                updatePagination(0);
+                return;
+            }
+            
+            tableBody.innerHTML = paginatedUsers.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="user-avatar">${user.name.charAt(0).toUpperCase()}</div>
+                            ${user.name}
+                        </div>
+                    </td>
+                    <td>${user.email}</td>
+                    <td>
+                        <div style="font-family: monospace; background: #f8f9fa; padding: 4px 8px; border-radius: 4px;">
+                            ${user.password}
+                        </div>
+                    </td>
+                    <td>${user.phone}</td>
+                    <td>
+                        <span class="pet-badge ${user.petType}">
+                            ${user.petType.charAt(0).toUpperCase() + user.petType.slice(1)}
+                        </span>
+                    </td>
+                    <td>${user.createdAt}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon view" onclick="viewUser('${user.id}')" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon edit" onclick="editUser('${user.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon delete" onclick="deleteUserPrompt('${user.id}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            updatePagination(filteredUsers.length);
+        }
+
+        function updatePagination(totalItems) {
+            const paginationEl = document.getElementById('pagination');
+            
+            if (totalItems <= itemsPerPage) {
+                paginationEl.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <button class="page-btn" onclick="changePage(${currentPage - 1})" 
+                        ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    paginationHTML += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" 
+                                onclick="changePage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    paginationHTML += `<span class="page-btn">...</span>`;
+                }
+            }
+            
+            // Next button
+            paginationHTML += `
+                <button class="page-btn" onclick="changePage(${currentPage + 1})" 
+                        ${currentPage === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            paginationEl.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            updateUsersTable();
+        }
+
+        function sortUsers(field) {
+            if (currentSort.field === field) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                currentSort.direction = 'asc';
+            }
+            updateUsersTable();
+        }
+
+        function searchUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const filteredUsers = allUsers.filter(user => 
+                user.name.toLowerCase().includes(searchTerm) || 
+                user.email.toLowerCase().includes(searchTerm) ||
+                user.phone.toLowerCase().includes(searchTerm)
+            );
+            currentPage = 1;
+            updateUsersTable(filteredUsers);
+        }
+
+        function filterUsers() {
+            const petFilter = document.getElementById('petFilter').value;
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            
+            let filteredUsers = allUsers;
+            
+            if (petFilter) {
+                filteredUsers = filteredUsers.filter(user => user.petType === petFilter);
+            }
+            
+            if (searchTerm) {
+                filteredUsers = filteredUsers.filter(user => 
+                    user.name.toLowerCase().includes(searchTerm) || 
+                    user.email.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            currentPage = 1;
+            updateUsersTable(filteredUsers);
+        }
+
+        function showAddUserModal() {
+            document.getElementById('modalTitle').textContent = 'Add New User';
+            document.getElementById('userForm').reset();
+            document.getElementById('editUserId').value = '';
+            document.getElementById('deleteBtn').style.display = 'none';
+            
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function editUser(userId) {
+            const user = allUsers.find(u => u.id == userId);
+            if (!user) return;
+            
+            document.getElementById('modalTitle').textContent = 'Edit User';
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editUserName').value = user.name;
+            document.getElementById('editUserEmail').value = user.email;
+            document.getElementById('editUserPassword').value = user.password;
+            document.getElementById('editUserPhone').value = user.phone;
+            document.getElementById('editUserPetType').value = user.petType;
+            document.getElementById('editUserStatus').value = user.status;
+            document.getElementById('editUserNotes').value = user.notes;
+            document.getElementById('deleteBtn').style.display = 'inline-block';
+            
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function viewUser(userId) {
+            const user = allUsers.find(u => u.id == userId);
+            if (!user) return;
+            
+            alert(`
+User Details:
+-------------
+ID: ${user.id}
+Name: ${user.name}
+Email: ${user.email}
+Password: ${user.password}
+Phone: ${user.phone}
+Pet Type: ${user.petType}
+Joined: ${user.createdAt}
+Status: ${user.status}
+Notes: ${user.notes || 'None'}
+            `);
+        }
+
+        function saveUser() {
+            const userId = document.getElementById('editUserId').value;
+            const userData = {
+                name: document.getElementById('editUserName').value,
+                email: document.getElementById('editUserEmail').value,
+                password: document.getElementById('editUserPassword').value,
+                phone: document.getElementById('editUserPhone').value,
+                petType: document.getElementById('editUserPetType').value,
+                status: document.getElementById('editUserStatus').value,
+                notes: document.getElementById('editUserNotes').value
+            };
+            
+            // Validate
+            if (!userData.name || !userData.email || !userData.password) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            if (userId) {
+                // Update existing user
+                const index = allUsers.findIndex(u => u.id == userId);
+                if (index !== -1) {
+                    allUsers[index] = { ...allUsers[index], ...userData };
+                    showToast('User updated successfully', 'success');
+                }
+            } else {
+                // Add new user
+                const newUser = {
+                    id: generateUserId(),
+                    ...userData,
+                    createdAt: new Date().toLocaleString()
+                };
+                allUsers.unshift(newUser);
+                showToast('User added successfully', 'success');
+            }
+            
+            updateDashboardStats();
+            updateUsersTable();
+            closeModal();
+        }
+
+        function deleteUserPrompt(userId) {
+            if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                deleteUser(userId);
+            }
+        }
+
+        function deleteUser(userId = null) {
+            const idToDelete = userId || document.getElementById('editUserId').value;
+            
+            if (!idToDelete) {
+                const index = allUsers.findIndex(u => u.id == idToDelete);
+                if (index !== -1) {
+                    allUsers.splice(index, 1);
+                    showToast('User deleted successfully', 'success');
+                    updateDashboardStats();
+                    updateUsersTable();
+                }
+            }
+            
+            closeModal();
+        }
+
+        function deleteAllUsers() {
+            if (confirm('⚠️ WARNING: This will delete ALL users. Are you absolutely sure?')) {
+                if (confirm('This action cannot be undone. Type "DELETE" to confirm:')) {
+                    allUsers = [];
+                    showToast('All users deleted', 'warning');
+                    updateDashboardStats();
+                    updateUsersTable();
+                }
+            }
+        }
+
+        function addNewUser() {
+            const userData = {
+                name: document.getElementById('newUserName').value,
+                email: document.getElementById('newUserEmail').value,
+                password: document.getElementById('newUserPassword').value,
+                phone: document.getElementById('newUserPhone').value,
+                petType: document.getElementById('newUserPetType').value,
+                status: document.getElementById('newUserStatus').value,
+                notes: document.getElementById('newUserNotes').value
+            };
+            
+            if (!userData.name || !userData.email || !userData.password) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const newUser = {
+                id: generateUserId(),
+                ...userData,
+                createdAt: new Date().toLocaleString()
+            };
+            
+            allUsers.unshift(newUser);
+            showToast('User added successfully!', 'success');
+            
+            // Reset form
+            document.getElementById('addUserForm').reset();
+            
+            // Update tables
+            updateDashboardStats();
+            updateUsersTable();
+        }
+
+        function generateRandomUser() {
+            const firstNames = ['John', 'Jane', 'Alex', 'Emily', 'Michael', 'Sarah', 'David', 'Lisa', 'Robert', 'Maria'];
+            const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez'];
+            const petTypes = ['dog', 'cat', 'bird', 'fish', 'rabbit', 'other'];
+            
+            const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            const randomPetType = petTypes[Math.floor(Math.random() * petTypes.length)];
+            
+            document.getElementById('newUserName').value = `${randomFirstName} ${randomLastName}`;
+            document.getElementById('newUserEmail').value = `${randomFirstName.toLowerCase()}.${randomLastName.toLowerCase()}@example.com`;
+            document.getElementById('newUserPassword').value = `pass${Math.floor(Math.random() * 10000)}`;
+            document.getElementById('newUserPhone').value = `+1${Math.floor(2000000000 + Math.random() * 8000000000)}`;
+            document.getElementById('newUserPetType').value = randomPetType;
+        }
+
+        function generateUserId() {
+            return 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        }
+
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const button = field.nextElementSibling;
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                button.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                field.type = 'password';
+                button.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+
+        function refreshUsers() {
+            loadUsers();
+            showToast('Refreshing user data...', 'success');
+        }
+
+        function exportUsers(format) {
+            let data, filename, mimeType;
+            
+            if (format === 'csv') {
+                const headers = ['ID', 'Name', 'Email', 'Password', 'Phone', 'Pet Type', 'Joined', 'Status'];
+                const rows = allUsers.map(user => [
+                    user.id,
+                    `"${user.name}"`,
+                    user.email,
+                    user.password,
+                    user.phone,
+                    user.petType,
+                    user.createdAt,
+                    user.status
+                ]);
+                
+                data = [headers, ...rows].map(row => row.join(',')).join('\n');
+                filename = `petly_users_${new Date().toISOString().split('T')[0]}.csv`;
+                mimeType = 'text/csv';
+            } else {
+                data = JSON.stringify(allUsers, null, 2);
+                filename = `petly_users_${new Date().toISOString().split('T')[0]}.json`;
+                mimeType = 'application/json';
+            }
+            
+            const blob = new Blob([data], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast(`Exported ${allUsers.length} users as ${format.toUpperCase()}`, 'success');
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        function updateApiUrl() {
+            const newUrl = document.getElementById('apiUrl').value;
+            localStorage.setItem('apiUrl', newUrl);
+            location.reload();
+        }
+
+        function updateItemsPerPage() {
+            itemsPerPage = parseInt(document.getElementById('itemsPerPage').value);
+            localStorage.setItem('itemsPerPage', itemsPerPage);
+            currentPage = 1;
+            updateUsersTable();
+        }
+
+        function updateRefreshInterval() {
+            const interval = parseInt(document.getElementById('refreshInterval').value);
+            
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            if (interval > 0) {
+                refreshInterval = setInterval(refreshUsers, interval);
+                showToast(`Auto-refresh set to ${interval/1000} seconds`, 'success');
+            }
+        }
+
+        function setupAutoRefresh() {
+            const savedInterval = localStorage.getItem('refreshInterval') || '60000';
+            document.getElementById('refreshInterval').value = savedInterval;
+            updateRefreshInterval();
+        }
+
+        // Initialize sortable headers
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.addEventListener('click', function() {
+                    const field = this.getAttribute('data-sort');
+                    sortUsers(field);
+                });
+            });
+        });
+
+        // Handle hash change for page navigation
+        window.addEventListener('hashchange', function() {
+            const page = window.location.hash.substring(1) || 'dashboard';
+            showPage(page);
+        });
+
+        // Initialize with hash if present
+        const initialPage = window.location.hash.substring(1) || 'dashboard';
+        showPage(initialPage);
+    </script>
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | PetCare Community</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="login_animation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #000;
+            font-family: 'Cherry Bomb One', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Background Image */
+        .image-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .image-background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9);
+        }
+
+        /* Overlay for better text readability */
+        .image-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(3px);
+        }
+
+        .signup-container {
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.1) inset;
+            position: relative;
+            z-index: 2;
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .signup-header h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .signup-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* FORM ELEMENTS WITH EQUAL SIZES */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            color: white;
+            margin-bottom: 8px;
+            font-size: 16px;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* EQUAL SIZE FOR ALL INPUTS AND BUTTONS */
+        .form-input, 
+        .signup-btn, 
+        .back-btn {
+            width: 100%;
+            height: 55px;
+            padding: 0 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-family: 'Cherry Bomb One', cursive;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        /* Input Fields */
+        .form-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: #333;
+            letter-spacing: 1px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: white;
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Password strength indicator */
+        .password-strength {
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { 
+            width: 33%; 
+            background: #ff6b6b; 
+        }
+        .strength-medium { 
+            width: 66%; 
+            background: #feca57; 
+        }
+        .strength-strong { 
+            width: 100%; 
+            background: #51cf66; 
+        }
+
+        /* Error message styling */
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+            padding: 8px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-message {
+            color: #51cf66;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+            padding: 8px;
+            background: rgba(81, 207, 102, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(81, 207, 102, 0.3);
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Input error state */
+        .form-input.error {
+            border-color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .form-input.success {
+            border-color: #51cf66;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sign Up Button */
+        .signup-btn {
+            background: rgba(86, 98, 246, 0.25);
+            border: 2px solid rgba(86, 98, 246, 0.5);
+            color: white;
+            cursor: pointer;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .signup-btn:hover {
+            background: rgba(86, 98, 246, 0.35);
+            transform: translateY(-3px);
+        }
+
+        .signup-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Back Button */
+        .back-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            cursor: pointer;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .signup-footer {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .signup-footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Password toggle */
+        .password-toggle-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        /* Placeholder styling */
+        .form-input::placeholder {
+            color: rgba(51, 51, 51, 0.7);
+            font-family: 'Cherry Bomb One', cursive;
+            letter-spacing: 1px;
+        }
+
+        /* Terms checkbox */
+        .terms-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .terms-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .terms-group a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .signup-container {
+                padding: 25px;
+                margin: 20px;
+                max-width: 450px;
+            }
+            
+            .signup-header h1 {
+                font-size: 28px;
+            }
+            
+            .form-input, 
+            .signup-btn, 
+            .back-btn {
+                height: 50px;
+                font-size: 15px;
+                padding: 0 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 20px;
+            }
+            
+            .signup-header h1 {
+                font-size: 24px;
+            }
+            
+            .signup-header p {
+                font-size: 14px;
+            }
+            
+            .form-input, 
+            .signup-btn, 
+            .back-btn {
+                height: 48px;
+                font-size: 14px;
+                padding: 0 15px;
+            }
+            
+            .form-label {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Image -->
+    <div class="image-background">
+        <img src="../resourses/pic_sign.png" alt="Sign Up Background">
+    </div>
+
+    <!-- Sign Up Form -->
+    <div class="signup-container">
+        <div class="signup-header">
+            <h1><i class="fas fa-paw"></i> JOIN US</h1>
+            <p>Create your PetCare Community account</p>
+        </div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label class="form-label" for="fullName">Full Name</label>
+                <input type="text" id="fullName" class="form-input" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group password-toggle-container">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                <button type="button" class="password-toggle" id="togglePassword">👁️</button>
+                <div class="password-strength">
+                    <div id="passwordStrengthMeter" class="strength-meter"></div>
+                </div>
+            </div>
+
+            <div class="form-group password-toggle-container">
+                <label class="form-label" for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required>
+                <button type="button" class="password-toggle" id="toggleConfirmPassword">👁️</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="petName">Pet's Name (Optional)</label>
+                <input type="text" id="petName" class="form-input" placeholder="e.g., Bruno">
+            </div>
+
+            <div class="terms-group">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">
+                    I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+                </label>
+            </div>
+
+            <!-- Error Message Container -->
+            <div id="errorMessage" class="error-message"></div>
+
+            <!-- Success Message Container -->
+            <div id="successMessage" class="success-message"></div>
+
+            <button type="submit" class="signup-btn">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+
+        <button class="back-btn" onclick="window.location.href='sign_in.html'">
+            <i class="fas fa-arrow-left"></i> Back to Sign In
+        </button>
+
+        <div class="signup-footer">
+            <p>Already have an account? <a href="sign_in.html">Sign in here</a></p>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Password visibility toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+            const confirmInput = document.getElementById('confirmPassword');
+            const type = confirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const meter = document.getElementById('passwordStrengthMeter');
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            meter.className = 'strength-meter';
+            if (password.length === 0) {
+                meter.style.width = '0';
+            } else if (strength <= 1) {
+                meter.className += ' strength-weak';
+            } else if (strength <= 2) {
+                meter.className += ' strength-medium';
+            } else {
+                meter.className += ' strength-strong';
+            }
+        });
+
+        // Form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const petName = document.getElementById('petName').value.trim();
+            const termsAccepted = document.getElementById('terms').checked;
+            
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Reset messages
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+            
+            // Remove error classes from all inputs
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('error', 'success');
+            });
+            
+            // Validation
+            if (!fullName || !email || !password || !confirmPassword) {
+                showError('Please fill in all required fields');
+                return;
+            }
+            
+            if (!termsAccepted) {
+                showError('Please accept the Terms of Service and Privacy Policy');
+                document.getElementById('terms').focus();
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('Please enter a valid email address', 'email');
+                return;
+            }
+            
+            // Password validation
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters long', 'password');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('Passwords do not match', 'password', 'confirmPassword');
+                return;
+            }
+            
+            // Check if email already exists
+            const users = JSON.parse(localStorage.getItem('petcare_users')) || [];
+            if (users.some(u => u.email === email)) {
+                showError('An account with this email already exists', 'email');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now().toString(),
+                name: fullName,
+                email: email,
+                password: password,
+                profilePic: '',
+                joinDate: new Date().toISOString(),
+                petName: petName || '',
+                petType: '',
+                location: ''
+            };
+            
+            // Add to users array
+            users.push(newUser);
+            localStorage.setItem('petcare_users', JSON.stringify(users));
+            
+            // Auto-login after signup
+            const session = {
+                user: {
+                    id: newUser.id,
+                    name: newUser.name,
+                    email: newUser.email,
+                    profilePic: newUser.profilePic,
+                    joinDate: newUser.joinDate
+                },
+                expires: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days
+            };
+            
+            localStorage.setItem('petcare_session', JSON.stringify(session));
+            
+            // Show success message
+            successMessage.textContent = 'Account created successfully! Redirecting to profile...';
+            successMessage.classList.add('show');
+            
+            // Mark all inputs as successful
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.add('success');
+            });
+            
+            // Redirect to profile after delay
+            setTimeout(() => {
+                window.location.href = 'profile.html';
+            }, 2000);
+        });
+        
+        function showError(message, ...fieldIds) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+            
+            // Mark the fields with errors
+            fieldIds.forEach(fieldId => {
+                if (fieldId) {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.classList.add('error');
+                        field.focus();
+                    }
+                }
+            });
+        }
+        
+        // Clear error when user starts typing
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('error');
+                document.getElementById('errorMessage').classList.remove('show');
+            });
+        });
+        
+        // Terms and Privacy modals
+        function showTerms() {
+            alert('TERMS OF SERVICE\n\nWelcome to PetCare Community!\n\n1. You agree to be a responsible pet owner\n2. You will not post harmful or misleading content\n3. You respect other community members\n4. You follow all local pet laws and regulations\n\nFull terms available upon request.');
+        }
+        
+        function showPrivacy() {
+            alert('PRIVACY POLICY\n\n1. We store your account information securely\n2. Your pet\'s information is private by default\n3. We never share your personal data with third parties\n4. You can delete your account anytime\n\nYour privacy is important to us!');
+        }
+    </script>
+</body>
+</html>

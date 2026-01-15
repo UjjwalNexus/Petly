@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traditional Pet Care | PetPal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #ff8c42;
+            --accent-color: #6bbf59;
+            --transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cherry Bomb One', cursive;
+        }
+        
+        body {
+            color: white;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Video Background */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        
+        /* Subtle overlay */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+            z-index: -1;
+        }
+        
+        /* Alphabet Navigation */
+        .alphabet-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            opacity: 0;
+            animation: fadeIn 1s 0.5s ease forwards;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(8px);
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            max-height: 85vh;
+            overflow-y: auto;
+            width: 250px;
+        }
+        
+        .alphabet-nav::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .alphabet-nav::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .alphabet-nav::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .alphabet-title {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 1px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .alphabet-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.05rem;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Special styling for problematic letters to make them more visible */
+        .alphabet-btn[data-letter="E"],
+        .alphabet-btn[data-letter="J"],
+        .alphabet-btn[data-letter="T"],
+        .alphabet-btn[data-letter="O"],
+        .alphabet-btn[data-letter="Y"] {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .alphabet-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .alphabet-btn.active {
+            background: rgba(255, 140, 66, 0.4);
+            border-color: var(--secondary-color);
+            color: white;
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.4);
+        }
+        
+        .animals-list {
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .animal-filter-item {
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .animal-filter-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 140, 66, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .animal-filter-item .animal-icon-small {
+            font-size: 1rem;
+            color: var(--secondary-color);
+            min-width: 20px;
+        }
+        
+        /* Content wrapper */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin-left: 270px;
+        }
+        
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+        
+        .counter {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            margin-top: 10px;
+            font-weight: 400;
+        }
+        
+        /* Main Pet Card Container */
+        .pet-card-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        
+        /* Navigation Arrows (Outside Card) */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeIn 1s 1.5s ease forwards;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-arrow:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .arrow-left {
+            left: -100px;
+        }
+        
+        .arrow-right {
+            right: -100px;
+        }
+        
+        /* Pet Card */
+        .pet-card {
+            position: relative;
+            padding: 3rem;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            width: 100%;
+            max-width: 800px;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: cardAppear 1s 1s ease forwards;
+            overflow: hidden;
+        }
+        
+        @keyframes cardAppear {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .pet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+        }
+        
+        /* Pet Card Header */
+        .pet-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .pet-icon-large {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .pet-title-section {
+            flex-grow: 1;
+        }
+        
+        .pet-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+        
+        .pet-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+        
+        .pet-badge {
+            display: inline-block;
+            background: rgba(255, 140, 66, 0.2);
+            color: var(--secondary-color);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            margin-top: 10px;
+        }
+        
+        /* Pet Info Sections */
+        .pet-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 2rem;
+        }
+        
+        .info-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            font-size: 1.2rem;
+        }
+        
+        /* Care List */
+        .care-list {
+            list-style: none;
+        }
+        
+        .care-list li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.8rem;
+            position: relative;
+        }
+        
+        .care-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* Additional Info */
+        .additional-info {
+            line-height: 1.7;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .info-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .info-label {
+            color: var(--secondary-color);
+            font-weight: 400;
+            margin-right: 5px;
+        }
+        
+        /* Care Tips */
+        .care-tips {
+            grid-column: span 2;
+            background: rgba(107, 191, 89, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+        }
+        
+        .tip-title {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Home Icon */
+        .home-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+        
+        .home-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            opacity: 0;
+            animation: fadeIn 1s 1.5s ease forwards;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .home-link:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: scale(1.1) rotate(360deg);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                margin-left: 270px;
+            }
+            
+            .arrow-left {
+                left: -80px;
+            }
+            
+            .arrow-right {
+                right: -80px;
+            }
+            
+            .nav-arrow {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                margin-left: 0;
+                padding-left: 270px;
+            }
+            
+            .alphabet-nav {
+                width: 250px;
+            }
+            
+            .pet-info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .care-tips {
+                grid-column: span 1;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .content-wrapper {
+                padding-left: 240px;
+            }
+            
+            .alphabet-nav {
+                width: 220px;
+            }
+            
+            .alphabet-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 7px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 1rem;
+                padding-left: 230px;
+            }
+            
+            .alphabet-nav {
+                width: 210px;
+                padding: 12px;
+                top: 10px;
+                left: 10px;
+            }
+            
+            .alphabet-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 6px;
+            }
+            
+            .alphabet-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+            
+            .logo {
+                font-size: 2.2rem;
+                margin-top: 20px;
+            }
+            
+            .nav-arrow {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                position: fixed;
+                bottom: 100px;
+                top: auto;
+            }
+            
+            .arrow-left {
+                left: 20px;
+            }
+            
+            .arrow-right {
+                right: 20px;
+            }
+            
+            .pet-card {
+                padding: 2rem;
+            }
+            
+            .pet-title {
+                font-size: 2rem;
+            }
+            
+            .pet-icon-large {
+                font-size: 3rem;
+            }
+            
+            .pet-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .home-link {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .animal-filter-item {
+                font-size: 0.95rem;
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .content-wrapper {
+                padding-left: 200px;
+            }
+            
+            .alphabet-nav {
+                width: 190px;
+            }
+            
+            .alphabet-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .content-wrapper {
+                padding-left: 170px;
+            }
+            
+            .alphabet-nav {
+                width: 160px;
+            }
+            
+            .alphabet-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+            }
+            
+            .alphabet-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 0.95rem;
+            }
+            
+            .animal-filter-item {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            
+            .pet-card {
+                padding: 1.5rem;
+            }
+            
+            .pet-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .content-wrapper {
+                padding-left: 150px;
+            }
+            
+            .alphabet-nav {
+                width: 140px;
+            }
+            
+            .alphabet-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline id="video-background">
+        <source src="Comv.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    
+    <!-- Subtle overlay -->
+    <div class="video-overlay"></div>
+    
+    <!-- Alphabet Navigation -->
+    <div class="alphabet-nav">
+        <div class="alphabet-title">Browse Animals</div>
+        <div class="alphabet-grid" id="alphabet-grid">
+            <!-- Alphabet buttons will be generated by JavaScript -->
+        </div>
+        <div class="animals-list" id="animals-list">
+            <!-- Animal list will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i> Traditional Pet Care
+            </div>
+            <div class="counter" id="counter">Animal 1 of 30</div>
+        </header>
+
+        <!-- Main Pet Card -->
+        <div class="pet-card-container">
+            <!-- Navigation Arrows -->
+            <div class="nav-arrow arrow-left" id="prev-btn">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            
+            <!-- Pet Card (Dynamic Content) -->
+            <div class="pet-card active" id="current-pet-card">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+            
+            <!-- Navigation Arrows -->
+            <div class="nav-arrow arrow-right" id="next-btn">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Icon -->
+    <div class="home-icon">
+        <a href="../index.html" class="home-link" title="Home">
+            <i class="fas fa-home"></i>
+        </a>
+    </div>
+
+    <script>
+        // Extended Pet Data - 30 animals with comprehensive information
+        const petsData = [
+            {
+                id: 1,
+                name: "Dogs",
+                icon: "fa-dog",
+                scientific: "Canis familiaris",
+                badge: "Most Popular Companion",
+                description: "Dogs are loyal, social animals that have been domesticated for thousands of years. They come in various breeds with different temperaments and care requirements.",
+                careList: [
+                    "Daily exercise (walks, playtime)",
+                    "High-quality protein-rich diet",
+                    "Regular veterinary check-ups",
+                    "Dental hygiene maintenance",
+                    "Socialization and training",
+                    "Grooming based on breed type"
+                ],
+                lifespan: "10-15 years",
+                diet: "Omnivore - Commercial dog food, meat, vegetables",
+                habitat: "Indoor with outdoor access, comfortable bedding",
+                temperament: "Loyal, social, trainable",
+                tip: "Early socialization (8-16 weeks) is crucial for developing well-adjusted behavior. Positive reinforcement training works best."
+            },
+            {
+                id: 2,
+                name: "Cats",
+                icon: "fa-cat",
+                scientific: "Felis catus",
+                badge: "Independent Feline",
+                description: "Cats are graceful, independent animals that form strong bonds with their owners. They are natural hunters with specific grooming and environmental needs.",
+                careList: [
+                    "Clean litter box maintained daily",
+                    "High-protein carnivore diet",
+                    "Regular brushing to prevent hairballs",
+                    "Annual veterinary examinations",
+                    "Scratching posts for claw health",
+                    "Environmental enrichment and play"
+                ],
+                lifespan: "12-18 years",
+                diet: "Obligate carnivore - Meat-based commercial food",
+                habitat: "Indoor with vertical spaces, hiding spots",
+                temperament: "Independent, curious, affectionate",
+                tip: "Provide multiple scratching surfaces and vertical spaces. Cats feel secure when they can observe from elevated positions."
+            },
+            {
+                id: 3,
+                name: "Fish",
+                icon: "fa-fish",
+                scientific: "Various species",
+                badge: "Aquatic Pet",
+                description: "Fish keeping requires attention to water quality and tank maintenance. Different species have specific requirements for temperature, pH, and tank mates.",
+                careList: [
+                    "Regular water testing and changes",
+                    "Proper filtration system maintenance",
+                    "Temperature regulation",
+                    "Species-appropriate feeding",
+                    "Tank cleaning and algae control",
+                    "Monitoring for disease signs"
+                ],
+                lifespan: "Varies by species (2-20 years)",
+                diet: "Species-specific - Flakes, pellets, live food",
+                habitat: "Properly sized aquarium with filtration",
+                temperament: "Varies by species",
+                tip: "Never add fish immediately after setting up a tank. Cycle the aquarium for 4-6 weeks to establish beneficial bacteria first."
+            },
+            {
+                id: 4,
+                name: "Birds",
+                icon: "fa-dove",
+                scientific: "Various species",
+                badge: "Feathered Friend",
+                description: "Birds are intelligent, social creatures that require mental stimulation and social interaction. Different species have vastly different care requirements.",
+                careList: [
+                    "Daily social interaction and attention",
+                    "Species-appropriate varied diet",
+                    "Cage cleaning and maintenance",
+                    "Regular avian veterinary care",
+                    "Flight time and exercise",
+                    "Mental stimulation toys"
+                ],
+                lifespan: "Varies widely (5-80 years)",
+                diet: "Species-specific - Pellets, seeds, fruits, vegetables",
+                habitat: "Spacious cage with perches, toys",
+                temperament: "Social, intelligent, vocal",
+                tip: "Research lifespan before adoption - some parrots can outlive their owners. Never use Teflon cookware around birds."
+            },
+            {
+                id: 5,
+                name: "Rabbits",
+                icon: "fa-paw",
+                scientific: "Oryctolagus cuniculus",
+                badge: "Social Herbivore",
+                description: "Rabbits are social, intelligent herbivores that require specific diets and environments. They can be litter trained and form strong bonds with owners.",
+                careList: [
+                    "Unlimited timothy hay available 24/7",
+                    "Large exercise area or free roaming",
+                    "Regular grooming especially during molting",
+                    "Spaying/neutering for health benefits",
+                    "Fresh vegetables daily",
+                    "Chew toys for dental health"
+                ],
+                lifespan: "8-12 years",
+                diet: "Herbivore - Hay, vegetables, limited pellets",
+                habitat: "Indoor housing with space to hop",
+                temperament: "Social, curious, can be timid",
+                tip: "Rabbits have delicate digestive systems. Introduce new foods gradually and avoid sudden diet changes."
+            },
+            {
+                id: 6,
+                name: "Hamsters",
+                icon: "fa-otter",
+                scientific: "Cricetinae family",
+                badge: "Nocturnal Rodent",
+                description: "Hamsters are solitary, nocturnal rodents popular as first pets. They need appropriate bedding, exercise wheels, and hiding spots.",
+                careList: [
+                    "Weekly cage cleaning with safe bedding",
+                    "Proper-sized exercise wheel",
+                    "Chew toys for continuously growing teeth",
+                    "Fresh water available at all times",
+                    "Appropriate bedding depth for burrowing",
+                    "Hideaways for security"
+                ],
+                lifespan: "1.5-3 years",
+                diet: "Omnivore - Commercial hamster mix, vegetables",
+                habitat: "Secure cage with deep bedding",
+                temperament: "Solitary, nocturnal, can be nippy",
+                tip: "Hamsters are solitary and territorial. Never house adult hamsters together as they will fight, often to the death."
+            },
+            {
+                id: 7,
+                name: "Guinea Pigs",
+                icon: "fa-otter",
+                scientific: "Cavia porcellus",
+                badge: "Social Chatterbox",
+                description: "Guinea pigs are highly social, vocal rodents that require companionship and Vitamin C supplementation. They communicate with various sounds.",
+                careList: [
+                    "Daily Vitamin C supplementation",
+                    "Unlimited timothy hay supply",
+                    "Fresh vegetables rich in Vitamin C",
+                    "Large cage with hiding places",
+                    "Same-species companionship",
+                    "Regular nail trimming"
+                ],
+                lifespan: "5-8 years",
+                diet: "Herbivore - Hay, Vitamin C-rich vegetables",
+                habitat: "Large cage or enclosure with friends",
+                temperament: "Social, vocal, generally gentle",
+                tip: "Guinea pigs cannot synthesize Vitamin C. Provide bell peppers, kale, or supplements daily to prevent scurvy."
+            },
+            {
+                id: 8,
+                name: "Turtles",
+                icon: "fa-frog",
+                scientific: "Testudines order",
+                badge: "Aquatic Reptile",
+                description: "Turtles require specialized aquatic setups with proper lighting, basking areas, and water filtration. Different species have specific needs.",
+                careList: [
+                    "Proper UVB lighting for shell health",
+                    "Dry basking area with heat lamp",
+                    "Adequate water filtration system",
+                    "Species-appropriate varied diet",
+                    "Regular tank cleaning and maintenance",
+                    "Calcium supplementation"
+                ],
+                lifespan: "20-40+ years",
+                diet: "Varies - Commercial pellets, vegetables, protein",
+                habitat: "Aquatic setup with basking area",
+                temperament: "Generally solitary, can be shy",
+                tip: "Research adult size before purchasing - some species grow much larger than pet stores indicate."
+            },
+            {
+                id: 9,
+                name: "Snakes",
+                icon: "fa-staff-snake",
+                scientific: "Serpentes suborder",
+                badge: "Carnivorous Reptile",
+                description: "Snakes are fascinating reptiles that require secure enclosures, proper heating gradients, and appropriate prey items. Research specific species needs.",
+                careList: [
+                    "Escape-proof secure enclosure",
+                    "Proper heating gradient establishment",
+                    "Humidity control for shedding",
+                    "Appropriate-sized prey items",
+                    "Clean water available at all times",
+                    "Hiding spots for security"
+                ],
+                lifespan: "10-30+ years depending on species",
+                diet: "Carnivore - Rodents, birds, eggs (species dependent)",
+                habitat: "Secure enclosure with heat gradient",
+                temperament: "Generally solitary, handling varies",
+                tip: "Always wash hands before and after handling. Never handle for 48 hours after feeding to prevent regurgitation."
+            },
+            {
+                id: 10,
+                name: "Lizards",
+                icon: "fa-dragon",
+                scientific: "Lacertilia suborder",
+                badge: "Diverse Reptile",
+                description: "Lizards encompass many species with varying requirements. Most need specific lighting, heating, and habitat setups.",
+                careList: [
+                    "Proper UVB lighting for calcium metabolism",
+                    "Temperature gradient in enclosure",
+                    "Species-appropriate substrate",
+                    "Varied diet specific to species",
+                    "Humidity control for health",
+                    "Climbing structures and hiding spots"
+                ],
+                lifespan: "5-20+ years depending on species",
+                diet: "Varies - Insects, vegetables, fruits, commercial diets",
+                habitat: "Enclosure with proper gradient and hides",
+                temperament: "Varies widely by species",
+                tip: "Create a proper temperature gradient with a warm basking spot and cooler areas for thermoregulation."
+            },
+            {
+                id: 11,
+                name: "Ferrets",
+                icon: "fa-ferret",
+                scientific: "Mustela putorius furo",
+                badge: "Playful Mustelid",
+                description: "Ferrets are curious, playful mammals that require supervision, mental stimulation, and ferret-proofed environments.",
+                careList: [
+                    "Secure, multi-level housing",
+                    "High-protein carnivore diet",
+                    "Multiple hours of supervised playtime",
+                    "Litter training from young age",
+                    "Regular grooming and nail trimming",
+                    "Vaccinations and preventive care"
+                ],
+                lifespan: "6-10 years",
+                diet: "Carnivore - Commercial ferret food, meat",
+                habitat: "Multi-level cage with bedding, toys",
+                temperament: "Playful, curious, mischievous",
+                tip: "Ferrets are escape artists. Check for small openings and secure all potential escape routes in their environment."
+            },
+            {
+                id: 12,
+                name: "Hedgehogs",
+                icon: "fa-hedgehog",
+                scientific: "Atelerix albiventris",
+                badge: "Nocturnal Insectivore",
+                description: "Hedgehogs are solitary, nocturnal insectivores that need warm environments, exercise wheels, and insect-based diets.",
+                careList: [
+                    "Consistent warm environment (72-80°F)",
+                    "Proper-sized solid-surface exercise wheel",
+                    "High-protein insectivore diet",
+                    "Regular gentle handling for socialization",
+                    "Clean bedding changed regularly",
+                    "Hideaway spots for daytime sleeping"
+                ],
+                lifespan: "3-6 years",
+                diet: "Insectivore - Insects, commercial hedgehog food",
+                habitat: "Warm enclosure with hiding spots",
+                temperament: "Solitary, nocturnal, can be shy",
+                tip: "Maintain consistent temperature to prevent hibernation attempts, which can be fatal for African pygmy hedgehogs."
+            },
+            {
+                id: 13,
+                name: "Chinchillas",
+                icon: "fa-otter",
+                scientific: "Chinchilla lanigera",
+                badge: "Dust Bath Enthusiast",
+                description: "Chinchillas are soft-furred rodents that require dust baths, cool temperatures, and specific dietary considerations.",
+                careList: [
+                    "Regular dust baths (2-3 times weekly)",
+                    "Cool environment (60-70°F ideal)",
+                    "Hay-based diet with limited treats",
+                    "Chew toys for dental health",
+                    "Large multi-level cage",
+                    "No water baths - use dust only"
+                ],
+                lifespan: "10-20 years",
+                diet: "Herbivore - Hay, chinchilla pellets, limited treats",
+                habitat: "Multi-level cage in cool environment",
+                temperament: "Active at dusk/dawn, can be shy",
+                tip: "Never bathe chinchillas in water. Their dense fur doesn't dry properly and can lead to fungal infections."
+            },
+            {
+                id: 14,
+                name: "Parrots",
+                icon: "fa-parrot",
+                scientific: "Psittaciformes order",
+                badge: "Intelligent Aviator",
+                description: "Parrots are highly intelligent birds known for problem-solving abilities and vocal mimicry. They require substantial commitment.",
+                careList: [
+                    "Daily social interaction and bonding",
+                    "Mental stimulation with puzzles",
+                    "Varied diet including pellets and produce",
+                    "Large cage for wing stretching",
+                    "Regular supervised flight time",
+                    "Annual avian veterinary checkups"
+                ],
+                lifespan: "20-80+ years depending on species",
+                diet: "Varied - Pellets, fruits, vegetables, nuts",
+                habitat: "Large cage with toys, perches",
+                temperament: "Intelligent, social, can be loud",
+                tip: "Parrots form lifelong bonds. Research species lifespan before adoption - some may outlive their owners."
+            },
+            {
+                id: 15,
+                name: "Geckos",
+                icon: "fa-dragon",
+                scientific: "Gekkota infraorder",
+                badge: "Nocturnal Climber",
+                description: "Geckos are diverse lizards with adhesive toe pads. Most are nocturnal insectivores with specific habitat requirements.",
+                careList: [
+                    "Proper heating with temperature gradient",
+                    "Humidity control for proper shedding",
+                    "Live insect diet with supplementation",
+                    "Multiple hiding spots available",
+                    "Clean enclosure maintained regularly",
+                    "Calcium and vitamin supplementation"
+                ],
+                lifespan: "10-20 years depending on species",
+                diet: "Insectivore - Live insects with supplements",
+                habitat: "Enclosure with climbing surfaces, hides",
+                temperament: "Generally docile, nocturnal",
+                tip: "Provide a moist hide box to aid with shedding. This is especially important for species that have difficulty shedding."
+            },
+            {
+                id: 16,
+                name: "Hermit Crabs",
+                icon: "fa-crab",
+                scientific: "Paguroidea superfamily",
+                badge: "Shell Collector",
+                description: "Hermit crabs are social crustaceans that require humidity, extra shells, and both salt and freshwater sources.",
+                careList: [
+                    "High humidity environment (70-80%)",
+                    "Multiple extra shells of various sizes",
+                    "Both saltwater and freshwater available",
+                    "Proper substrate for burrowing",
+                    "Social groups - never keep alone",
+                    "Varied diet including protein"
+                ],
+                lifespan: "10-30+ years with proper care",
+                diet: "Omnivore - Commercial food, fruits, vegetables, protein",
+                habitat: "Humid enclosure with climbing areas",
+                temperament: "Social, active, curious",
+                tip: "Provide multiple extra shells slightly larger than current shell. Crabs need options when they outgrow their homes."
+            },
+            {
+                id: 17,
+                name: "Sugar Gliders",
+                icon: "fa-dove",
+                scientific: "Petaurus breviceps",
+                badge: "Nocturnal Marsupial",
+                description: "Sugar gliders are social marsupials that glide using skin flaps. They require specialized diets and companionship.",
+                careList: [
+                    "Same-species companionship essential",
+                    "Specialized balanced diet",
+                    "Large vertical enclosure for gliding",
+                    "Nighttime activity accommodation",
+                    "Bonding pouch for carrying",
+                    "Exotic veterinarian experienced with gliders"
+                ],
+                lifespan: "10-15 years in captivity",
+                diet: "Omnivore - Specialized formula, insects, fruits",
+                habitat: "Tall enclosure with branches, pouches",
+                temperament: "Social, nocturnal, bonding required",
+                tip: "Sugar gliders are colony animals that can die from depression if kept alone. Always keep at least two together."
+            },
+            {
+                id: 18,
+                name: "Rats",
+                icon: "fa-rat",
+                scientific: "Rattus norvegicus domestica",
+                badge: "Intelligent Rodent",
+                description: "Rats are highly intelligent, social rodents that form strong bonds with owners. They need mental stimulation and companionship.",
+                careList: [
+                    "Same-sex companionship essential",
+                    "Large multi-level cage",
+                    "Daily mental stimulation and play",
+                    "Varied balanced diet",
+                    "Regular handling for bonding",
+                    "Clean bedding changed frequently"
+                ],
+                lifespan: "2-3 years",
+                diet: "Omnivore - Commercial rat blocks, vegetables, protein",
+                habitat: "Large cage with levels, hammocks, toys",
+                temperament: "Intelligent, social, affectionate",
+                tip: "Rats are highly social and can develop depression if kept alone. Always keep at least two same-sex rats together."
+            },
+            {
+                id: 19,
+                name: "Mice",
+                icon: "fa-mouse",
+                scientific: "Mus musculus domestica",
+                badge: "Social Small Pet",
+                description: "Mice are small, social rodents that live in groups. They need appropriate housing, exercise, and environmental enrichment.",
+                careList: [
+                    "Same-sex social groups",
+                    "Proper-sized exercise wheel",
+                    "Multiple hiding spots and nests",
+                    "Clean cage maintained weekly",
+                    "Varied diet with supplements",
+                    "Regular gentle handling"
+                ],
+                lifespan: "1.5-2.5 years",
+                diet: "Omnivore - Commercial mouse food, grains, protein",
+                habitat: "Secure cage with bedding, toys, hides",
+                temperament: "Social, active, curious",
+                tip: "Use dust-free bedding to prevent respiratory issues. Avoid cedar and pine shavings which contain harmful phenols."
+            },
+            {
+                id: 20,
+                name: "Frogs",
+                icon: "fa-frog",
+                scientific: "Anura order",
+                badge: "Amphibian Variety",
+                description: "Frogs require specific humidity, temperature, and enclosure setups. Care varies greatly between aquatic, terrestrial, and arboreal species.",
+                careList: [
+                    "Species-specific humidity control",
+                    "Proper temperature gradient",
+                    "Live insect diet with supplementation",
+                    "Clean water source appropriate to species",
+                    "Hiding spots and appropriate substrate",
+                    "Proper lighting if diurnal species"
+                ],
+                lifespan: "4-15+ years depending on species",
+                diet: "Insectivore - Live insects with supplements",
+                habitat: "Species-appropriate enclosure",
+                temperament: "Generally not for handling",
+                tip: "Research specific species requirements thoroughly - care varies dramatically between different types of frogs."
+            },
+            {
+                id: 21,
+                name: "Axolotls",
+                icon: "fa-fish",
+                scientific: "Ambystoma mexicanum",
+                badge: "Aquatic Salamander",
+                description: "Axolotls are unique aquatic salamanders that retain larval features throughout life. They require cool water and specific care.",
+                careList: [
+                    "Cool water temperature (60-64°F)",
+                    "No gravel substrate (sand or bare bottom)",
+                    "Low water flow filtration",
+                    "Protein-rich diet (worms, pellets)",
+                    "Regular water quality testing",
+                    "Hiding spots and low light"
+                ],
+                lifespan: "10-15 years",
+                diet: "Carnivore - Worms, pellets, occasional feeder fish",
+                habitat: "Cool aquarium with hiding spots",
+                temperament: "Generally sedentary, can be hand-fed",
+                tip: "Never use gravel substrate. Axolotls may ingest it causing impaction. Use fine sand or bare bottom tanks."
+            },
+            {
+                id: 22,
+                name: "Tarantulas",
+                icon: "fa-spider",
+                scientific: "Theraphosidae family",
+                badge: "Arachnid Pet",
+                description: "Tarantulas are fascinating arachnids with specific housing and care requirements. Most are terrestrial and relatively low-maintenance.",
+                careList: [
+                    "Escape-proof secure enclosure",
+                    "Species-appropriate humidity levels",
+                    "Live insect diet appropriate to size",
+                    "Hiding spots and substrate for burrowing",
+                    "Shallow water dish for hydration",
+                    "Minimal handling to reduce stress"
+                ],
+                lifespan: "5-30+ years (females live longer)",
+                diet: "Carnivore - Live insects appropriate to size",
+                habitat: "Secure enclosure with substrate, hides",
+                temperament: "Generally docile but varies by species",
+                tip: "Provide a shallow water dish and avoid deep substrate that could cause fatal falls for terrestrial species."
+            },
+            {
+                id: 23,
+                name: "Pigs",
+                icon: "fa-piggy-bank",
+                scientific: "Sus scrofa domesticus",
+                badge: "Intelligent Omnivore",
+                description: "Mini pigs are intelligent animals that require space, mental stimulation, and specialized care. They form strong bonds with owners.",
+                careList: [
+                    "Large outdoor space for rooting",
+                    "Mental stimulation and training",
+                    "Specialized pig diet with vegetables",
+                    "Regular hoof and tusk trimming",
+                    "Social interaction and companionship",
+                    "Cool environment - pigs don't sweat"
+                ],
+                lifespan: "12-20 years",
+                diet: "Omnivore - Commercial pig pellets, vegetables",
+                habitat: "Outdoor space with shelter, mud wallow",
+                temperament: "Intelligent, social, can be stubborn",
+                tip: "'Mini' pigs often grow much larger than advertised. Research breeds carefully and be prepared for a 100-200 pound adult."
+            },
+            {
+                id: 24,
+                name: "Goats",
+                icon: "fa-goat",
+                scientific: "Capra aegagrus hircus",
+                badge: "Social Grazer",
+                description: "Goats are social, intelligent herd animals that require space, proper fencing, and companionship. They're excellent at escaping.",
+                careList: [
+                    "Large secure outdoor enclosure",
+                    "Escape-proof sturdy fencing",
+                    "Herd companionship essential",
+                    "Hay and grain diet supplementation",
+                    "Regular hoof trimming",
+                    "Parasite control and deworming"
+                ],
+                lifespan: "10-15 years",
+                diet: "Herbivore - Hay, grains, browse, minerals",
+                habitat: "Outdoor space with shelter, climbing",
+                temperament: "Social, curious, intelligent",
+                tip: "Goats are herd animals that become stressed when alone. Always keep at least two goats together."
+            },
+            {
+                id: 25,
+                name: "Chickens",
+                icon: "fa-kiwi-bird",
+                scientific: "Gallus gallus domesticus",
+                badge: "Egg Layer",
+                description: "Chickens are social birds that provide eggs and pest control. They require secure housing, proper nutrition, and flock companionship.",
+                careList: [
+                    "Secure coop protected from predators",
+                    "Balanced layer feed with calcium",
+                    "Fresh water available at all times",
+                    "Dust bathing area provided",
+                    "Regular coop cleaning",
+                    "Flock social structure maintained"
+                ],
+                lifespan: "5-10 years",
+                diet: "Omnivore - Layer feed, grains, vegetables, insects",
+                habitat: "Secure coop with run, nesting boxes",
+                temperament: "Social, hierarchical, curious",
+                tip: "Provide oyster shell or crushed eggshells separately from feed for calcium supplementation for strong eggshells."
+            },
+            {
+                id: 26,
+                name: "Ducks",
+                icon: "fa-duck",
+                scientific: "Anatidae family",
+                badge: "Waterfowl",
+                description: "Ducks are social waterfowl that require water for swimming, proper nutrition, and secure housing. They're messier than chickens.",
+                careList: [
+                    "Access to water for swimming",
+                    "Waterproof secure housing",
+                    "Special waterfowl feed",
+                    "Clean bedding changed frequently",
+                    "Protection from predators",
+                    "Social companionship essential"
+                ],
+                lifespan: "8-12 years",
+                diet: "Omnivore - Waterfowl feed, greens, insects",
+                habitat: "Secure housing with pond or pool access",
+                temperament: "Social, vocal, can be messy",
+                tip: "Ducks need water deep enough to submerge their heads to keep their eyes and nostrils clean."
+            },
+            {
+                id: 27,
+                name: "Bearded Dragons",
+                icon: "fa-dragon",
+                scientific: "Pogona vitticeps",
+                badge: "Desert Reptile",
+                description: "Bearded dragons are popular lizards known for their docile nature. They require specific lighting, heating, and habitat setups.",
+                careList: [
+                    "Proper UVB lighting for calcium metabolism",
+                    "Basking spot of 95-110°F",
+                    "Varied diet of insects and vegetables",
+                    "Calcium and vitamin supplementation",
+                    "Appropriate substrate (not loose)",
+                    "Regular handling for socialization"
+                ],
+                lifespan: "8-12 years",
+                diet: "Omnivore - Insects, vegetables, occasional fruit",
+                habitat: "Desert-style enclosure with basking area",
+                temperament: "Generally docile, curious, diurnal",
+                tip: "Avoid loose substrates like sand for juveniles to prevent impaction. Use reptile carpet, tile, or paper towels instead."
+            },
+            {
+                id: 28,
+                name: "Iguanas",
+                icon: "fa-dragon",
+                scientific: "Iguana iguana",
+                badge: "Large Herbivore",
+                description: "Iguanas are large herbivorous lizards that require substantial space, specific lighting, and specialized diets.",
+                careList: [
+                    "Very large enclosure for adult size",
+                    "High UVB lighting requirements",
+                    "Strict herbivore diet - no animal protein",
+                    "High humidity environment",
+                    "Regular misting for hydration",
+                    "Minimal handling to reduce stress"
+                ],
+                lifespan: "15-20 years",
+                diet: "Herbivore - Dark leafy greens, vegetables, fruits",
+                habitat: "Large enclosure with climbing branches",
+                temperament: "Can be defensive, not for beginners",
+                tip: "Iguanas require strict vegetarian diets. Animal protein causes kidney failure and shortens lifespan dramatically."
+            },
+            {
+                id: 29,
+                name: "Salamanders",
+                icon: "fa-frog",
+                scientific: "Caudata order",
+                badge: "Moisture-Loving",
+                description: "Salamanders are amphibians that require moist environments, proper temperatures, and specific diets. Many are sensitive to handling.",
+                careList: [
+                    "Consistently moist environment",
+                    "Cool temperature maintenance",
+                    "Live insect diet with supplementation",
+                    "Clean dechlorinated water available",
+                    "Multiple hiding spots",
+                    "Minimal handling - skin sensitive"
+                ],
+                lifespan: "10-30+ years depending on species",
+                diet: "Insectivore - Live insects with supplements",
+                habitat: "Moist enclosure with hiding spots",
+                temperament: "Generally reclusive, not for handling",
+                tip: "Always use dechlorinated water and avoid handling as salamander skin absorbs chemicals and oils easily."
+            },
+            {
+                id: 30,
+                name: "Scorpions",
+                icon: "fa-bug",
+                scientific: "Scorpiones order",
+                badge: "Arachnid",
+                description: "Scorpions are fascinating arachnids with specific housing requirements. Most species are relatively low-maintenance pets.",
+                careList: [
+                    "Secure escape-proof enclosure",
+                    "Species-appropriate substrate",
+                    "Live insect diet",
+                    "Hiding spots and climbing options",
+                    "Appropriate humidity levels",
+                    "Minimal handling due to venom"
+                ],
+                lifespan: "3-8 years depending on species",
+                diet: "Carnivore - Live insects appropriate to size",
+                habitat: "Secure enclosure with substrate, hides",
+                temperament: "Generally reclusive, defensive",
+                tip: "Research species venom potency before purchasing. Emperor scorpions are popular due to relatively mild venom."
+            }
+        ];
+
+        // Current pet index
+        let currentPetIndex = 0;
+        let activeAlphabet = null;
+        let filteredAnimals = [...petsData];
+
+        // DOM Elements
+        const petCard = document.getElementById('current-pet-card');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const counter = document.getElementById('counter');
+        const alphabetGrid = document.getElementById('alphabet-grid');
+        const animalsList = document.getElementById('animals-list');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('video-background');
+            
+            // Ensure video plays
+            if (video) {
+                video.play().catch(function(error) {
+                    console.log("Video autoplay failed:", error);
+                });
+            }
+            
+            // Create alphabet navigation
+            createAlphabetNavigation();
+            
+            // Load initial pet
+            displayPet(currentPetIndex);
+            
+            // Event listeners
+            prevBtn.addEventListener('click', showPreviousPet);
+            nextBtn.addEventListener('click', showNextPet);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') showPreviousPet();
+                if (e.key === 'ArrowRight') showNextPet();
+            });
+        });
+
+        // Create alphabet navigation
+        function createAlphabetNavigation() {
+            // Create A-Z buttons
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            
+            alphabetGrid.innerHTML = alphabet.map(letter => 
+                `<div class="alphabet-btn" data-letter="${letter}">${letter}</div>`
+            ).join('');
+            
+            // Add click events to alphabet buttons
+            document.querySelectorAll('.alphabet-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const letter = this.getAttribute('data-letter');
+                    filterAnimalsByLetter(letter);
+                    
+                    // Update active state
+                    document.querySelectorAll('.alphabet-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Show all animals initially
+            updateAnimalsList(petsData);
+        }
+
+        // Filter animals by starting letter
+        function filterAnimalsByLetter(letter) {
+            activeAlphabet = letter;
+            filteredAnimals = petsData.filter(pet => 
+                pet.name.toUpperCase().startsWith(letter)
+            );
+            
+            updateAnimalsList(filteredAnimals);
+            
+            // If filtered animals exist, show first one
+            if (filteredAnimals.length > 0) {
+                const firstIndex = petsData.findIndex(pet => pet.id === filteredAnimals[0].id);
+                if (firstIndex !== -1) {
+                    currentPetIndex = firstIndex;
+                    displayPet(currentPetIndex);
+                }
+            }
+        }
+
+        // Update animals list display
+        function updateAnimalsList(animals) {
+            animalsList.innerHTML = animals.map(pet => 
+                `<div class="animal-filter-item" data-id="${pet.id}">
+                    <i class="fas ${pet.icon} animal-icon-small"></i>
+                    ${pet.name}
+                </div>`
+            ).join('');
+            
+            // Add click events to animal list items
+            document.querySelectorAll('.animal-filter-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    const index = petsData.findIndex(pet => pet.id === id);
+                    if (index !== -1) {
+                        currentPetIndex = index;
+                        displayPet(currentPetIndex);
+                        
+                        // Update active alphabet
+                        const firstLetter = petsData[index].name[0].toUpperCase();
+                        updateActiveAlphabetButton(firstLetter);
+                    }
+                });
+            });
+        }
+
+        // Update active alphabet button
+        function updateActiveAlphabetButton(letter) {
+            document.querySelectorAll('.alphabet-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-letter') === letter) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Display pet information with enhanced layout
+        function displayPet(index) {
+            const pet = petsData[index];
+            
+            petCard.innerHTML = `
+                <div class="pet-header">
+                    <div class="pet-icon-large">
+                        <i class="fas ${pet.icon}"></i>
+                    </div>
+                    <div class="pet-title-section">
+                        <h3 class="pet-title">${pet.name}</h3>
+                        <div class="pet-subtitle">${pet.scientific}</div>
+                        <div class="pet-badge">${pet.badge}</div>
+                    </div>
+                </div>
+                
+                <div class="additional-info">
+                    <p>${pet.description}</p>
+                </div>
+                
+                <div class="pet-info-grid">
+                    <div class="info-section">
+                        <h4 class="section-title"><i class="fas fa-clipboard-list"></i> Essential Care</h4>
+                        <ul class="care-list">
+                            ${pet.careList.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h4 class="section-title"><i class="fas fa-info-circle"></i> Quick Facts</h4>
+                        <div class="additional-info">
+                            <div class="info-item">
+                                <span class="info-label">Average Lifespan:</span> ${pet.lifespan}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Diet Type:</span> ${pet.diet}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Habitat Needs:</span> ${pet.habitat}
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Temperament:</span> ${pet.temperament}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="care-tips">
+                        <h4 class="tip-title"><i class="fas fa-lightbulb"></i> Pro Care Tip</h4>
+                        <p>${pet.tip}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Update counter
+            counter.textContent = `Animal ${index + 1} of ${petsData.length}`;
+            
+            // Update active alphabet
+            const firstLetter = pet.name[0].toUpperCase();
+            updateActiveAlphabetButton(firstLetter);
+            
+            // Update filtered list if alphabet filter is active
+            if (activeAlphabet && !pet.name.toUpperCase().startsWith(activeAlphabet)) {
+                activeAlphabet = null;
+                document.querySelectorAll('.alphabet-btn').forEach(btn => btn.classList.remove('active'));
+                updateAnimalsList(petsData);
+            }
+        }
+
+        // Show previous pet
+        function showPreviousPet() {
+            if (activeAlphabet && filteredAnimals.length > 0) {
+                // Navigate within filtered list
+                const currentPet = petsData[currentPetIndex];
+                const currentFilteredIndex = filteredAnimals.findIndex(pet => pet.id === currentPet.id);
+                const newFilteredIndex = (currentFilteredIndex - 1 + filteredAnimals.length) % filteredAnimals.length;
+                const newPetId = filteredAnimals[newFilteredIndex].id;
+                currentPetIndex = petsData.findIndex(pet => pet.id === newPetId);
+            } else {
+                // Navigate through all pets
+                currentPetIndex = (currentPetIndex - 1 + petsData.length) % petsData.length;
+            }
+            
+            displayPet(currentPetIndex);
+            animateCardChange('left');
+        }
+
+        // Show next pet
+        function showNextPet() {
+            if (activeAlphabet && filteredAnimals.length > 0) {
+                // Navigate within filtered list
+                const currentPet = petsData[currentPetIndex];
+                const currentFilteredIndex = filteredAnimals.findIndex(pet => pet.id === currentPet.id);
+                const newFilteredIndex = (currentFilteredIndex + 1) % filteredAnimals.length;
+                const newPetId = filteredAnimals[newFilteredIndex].id;
+                currentPetIndex = petsData.findIndex(pet => pet.id === newPetId);
+            } else {
+                // Navigate through all pets
+                currentPetIndex = (currentPetIndex + 1) % petsData.length;
+            }
+            
+            displayPet(currentPetIndex);
+            animateCardChange('right');
+        }
+
+        // Animate card change
+        function animateCardChange(direction) {
+            petCard.style.opacity = '0';
+            petCard.style.transform = direction === 'left' ? 'translateX(-30px) scale(0.95)' : 'translateX(30px) scale(0.95)';
+            
+            setTimeout(() => {
+                petCard.style.opacity = '1';
+                petCard.style.transform = 'translateX(0) scale(1)';
+                petCard.style.transition = 'all 0.5s ease';
+            }, 50);
+        }
+    </script>
+</body>
+</html>
